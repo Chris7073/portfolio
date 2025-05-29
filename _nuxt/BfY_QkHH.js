@@ -1,0 +1,1 @@
+import{m as n,c as o,o as e}from"./BRJGdOIR.js";const c={class:"text-block"},s=["innerHTML"],a={key:1},r=n({__name:"textBlock",props:{blockData:{}},setup(l){return(t,_)=>(e(),o("div",c,[t.blockData.block_content?(e(),o("div",{key:0,innerHTML:t.blockData.block_content},null,8,s)):(e(),o("p",a,"Testo non disponibile."))]))}});export{r as default};

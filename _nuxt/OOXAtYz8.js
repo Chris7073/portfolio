@@ -1,0 +1,1 @@
+import{an as t,U as s,x as o}from"./BRJGdOIR.js";const i=t((e,n)=>{const{loggedIn:r}=s(),a="/dashboard/login";if(!r.value)return e.path!==a?o(a):void 0;if(e.path===a)return o("/dashboard")});export{i as default};
