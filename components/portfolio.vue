@@ -34,13 +34,13 @@ const filteredPostsCatId = computed(() => {
 </script>
 <template>
     <div class="flex justify-between p-4">
-        <div class="content-center">test</div>
+        <div class="content-center text-muted-foreground">Portfolio</div>
         <div class="w-50">
             <Select v-model="selectedCatId">
                 <SelectTrigger>
                     <SelectValue placeholder="Categories" />
                 </SelectTrigger>
-                <SelectContent class="w-[var(--reka-popper-anchor-width)]">
+                <SelectContent class="w-[var(--reka-popper-anchor-width)] z-[1000]">
                     <SelectGroup>
                         <SelectLabel>Category List</SelectLabel>
                         <SelectItem v-for="cat in portfolioCatsInfo" :key="cat.cat_id" :value="cat.cat_id">
@@ -83,7 +83,7 @@ const filteredPostsCatId = computed(() => {
                 </div>
             </div>
             <div v-else>
-                <span>No Posts to show</span>
+                <span class="p-4">No Posts to show</span>
             </div>
         </div>
     </div>
