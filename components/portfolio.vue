@@ -12,6 +12,10 @@ import {
 const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories');
 const { data: PortfolioPostsInfo, pending } = useFetch('/api/portfolio-posts');
 
+watchEffect(() => {
+  console.log('Portfolio loaded status:', pending)
+})
+
 function getCategoryName(catId: string) {
     const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
     return cat ? cat.cat_name : 'No category'
