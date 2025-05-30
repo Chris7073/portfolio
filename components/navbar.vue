@@ -15,8 +15,7 @@ function showContattiDialog() {
     dialog.open({
         body: DialogsContatti,
         title: "Contatti",
-        description: "Contatti Desc",
-        footer: "Quando mi fai un gioco di bocca?"
+        description: "Descrizione",
     })
 }
 </script>
