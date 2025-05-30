@@ -2,13 +2,12 @@
 const { pending:isLoadingLanding } = useFetch('/api/landing-settings');
 const { pending:isLoadingPortfolio } = useFetch('/api/portfolio-posts');
 
-const isLoading = computed(()=>{
-    if(isLoadingLanding && isLoadingPortfolio) return true;
-    return false;
-})
+const isLoading = computed(() => {
+  return isLoadingLanding.value || isLoadingPortfolio.value;
+});
 </script>
 <template>
-    <div v-if="!isLoading" class="h-dvh bg-gray-200">
+    <div v-if="isLoading" class="h-dvh bg-gray-200">
     <div class="flex items-center justify-center h-full w-full">
       <div class="flex flex-col gap-2">
         <Skeleton class="w-50 bg-gray-300 h-5" />
