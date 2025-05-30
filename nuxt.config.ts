@@ -25,7 +25,7 @@ ssr:false,
     componentDir: './components/ui'
   },
   app:{
-    baseURL:'/portfolio/',
+    baseURL:'/',
     buildAssetsDir:'/_nuxt/'
   }
 })

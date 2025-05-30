@@ -48,7 +48,7 @@ function toggleActive(id: string) {
 
 async function updateSocialSettings() {
   try {
-    await fetch('/api/websettings/update-social-links-settings', {
+    await fetch('/api/websettings/update-social-links-settings/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(currentSocialsLinks.value),
