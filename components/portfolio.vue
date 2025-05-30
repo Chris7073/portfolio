@@ -13,7 +13,7 @@ const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories');
 const { data: PortfolioPostsInfo, pending } = useFetch('/api/portfolio-posts');
 
 watchEffect(() => {
-  console.log('Portfolio loaded status:', pending)
+  console.log('Portfolio loaded status:', pending.value)
 })
 
 function getCategoryName(catId: string) {
