@@ -83,7 +83,7 @@ watch(landingInfo, (newVal) => {
 
 async function updateHeroSettings() {
   try {
-    await fetch('/api/websettings/update-landing-settings', {
+    await fetch('/api/websettings/update-landing-settings/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(currentLandingInfo.value),

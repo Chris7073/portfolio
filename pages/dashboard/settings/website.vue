@@ -40,7 +40,7 @@ watch(websiteInfo, (newVal) => {
 
 async function updateWebSettings() {
   try {
-    await fetch('/api/websettings/update-web-settings', {
+    await fetch('/api/websettings/update-web-settings/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(currentWebsiteInfo.value),
