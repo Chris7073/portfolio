@@ -21,6 +21,7 @@ interface TPostBlock {
     id?: string | number;
     post_id: string;
     block_position: string | number;
+    block_title?:string,
     block_content: string;
     block_name: string;
     [key: string]: any;
@@ -211,12 +212,18 @@ const checkChanges = computed<boolean>(() => {
                         <AccordionItem :value="`item-${bloccoWrapper.filterBlocks.id || index}`" class="border-b-0">
                             <AccordionTrigger class="hover:no-underline">{{ bloccoWrapper.filterBlocks.block_name }} block</AccordionTrigger>
                             <AccordionContent class="bg-white p-4 rounded-sm m-2">
+                                <!-- blocco testo -->
                                 <div v-if="bloccoWrapper.filterBlocks.block_name === 'text'">
+                                     <Label :for="`title-text-${bloccoWrapper.filterBlocks.id || index}`" class="text-sm font-medium">Title</Label>
+                                    <Input :id="`title-text-${bloccoWrapper.filterBlocks.id || index}`"
+                                        v-model="bloccoWrapper.filterBlocks.block_title"
+                                        @blur="handleInputModification" class="mb-4 mt-2" />
                                     <Label :for="`content-text-${bloccoWrapper.filterBlocks.id || index}`" class="text-sm font-medium">Content</Label>
-                                    <Input :id="`content-text-${bloccoWrapper.filterBlocks.id || index}`"
+                                    <Textarea :id="`content-text-${bloccoWrapper.filterBlocks.id || index}`"
                                         v-model="bloccoWrapper.filterBlocks.block_content"
-                                        @blur="handleInputModification" class="mt-1" />
+                                        @blur="handleInputModification" class="mt-2" />
                                 </div>
+                                <!-- blocco immagine -->
                                 <div v-else-if="bloccoWrapper.filterBlocks.block_name === 'image'">
                                     <Label :for="`content-image-${bloccoWrapper.filterBlocks.id || index}`" class="text-sm font-medium">Image URL</Label>
                                     <Input :id="`content-image-${bloccoWrapper.filterBlocks.id || index}`"

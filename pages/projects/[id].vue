@@ -4,6 +4,7 @@ import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 //BLOCCHI
 const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue'));
 const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue'));
+const imageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
 
 interface Blocco {
   id: string | number;
@@ -61,6 +62,7 @@ type BlockComponent = DefineComponent<{ blockData: Blocco }, {}, any> | Componen
 const componentMap: Record<string, BlockComponent> = {
   'text': TextBlock,
   'image': ImageBlock,
+  'text-image':imageTextBlock,
 };
 
 function getComponentForBlock(blockType: string) {
