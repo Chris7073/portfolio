@@ -34,7 +34,7 @@ const filteredPostsCatId = computed(() => {
 })
 </script>
 <template>
-    <section id="portfolio" class="relative z-10 bg-white dark:bg-slate-900 py-16 lg:py-24 px-4">
+    <section id="portfolio" class="relative z-20 bg-white dark:bg-slate-900 py-16 lg:py-24 px-4">
         <div class="container mx-auto">
 
             <div class="text-center mb-8 lg:mb-12">

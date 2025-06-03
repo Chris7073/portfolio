@@ -25,13 +25,21 @@ const toggleItem = (title: string) => {
 const items = [
   { title: "Home", url: "/dashboard/", icon: 'home' },
   {
-    title: "Projects", url: "/dashboard/projects", icon: 'archive', number_projects: '',
+    title: "Projects", url: "", icon: 'archive',
+    child: [
+      {
+        title: "Projects List", url: "/dashboard/projects"
+      },
+            {
+        title: " Categories", url: "/dashboard/projects/categories"
+      },
+    ]
   },
   {
     title: "Settings", url: "", icon: 'setting', child: [
-      { title: "Website settings", url: "/dashboard/settings/website", number_projects: '' },
-      { title: "Landing settings", url: "/dashboard/settings/landing", number_projects: '' },
-      { title: "Navbar settings", url: "/dashboard/settings/navbar", number_projects: '' }
+      { title: "Website settings", url: "/dashboard/settings/website" },
+      { title: "Landing settings", url: "/dashboard/settings/landing" },
+      { title: "Navbar settings", url: "/dashboard/settings/navbar" }
     ]
   }
 ]
@@ -72,8 +80,6 @@ function showUserModal() {
                   :class="route.path === item.url ? 'bg-blue-500/90 text-white hover:bg-blue-500 hover:text-white' : 'bg-gray-100 hover:bg-gray-200'">
                   <Icon :name="'uil:' + item.icon" />
                   <span>{{ item.title }}</span>
-                  <SidebarMenuBadge v-if="item.number_projects">{{ item.number_projects }}
-                  </SidebarMenuBadge>
                 </SidebarMenuButton>
               </NuxtLink>
               <div v-else>
@@ -93,8 +99,6 @@ function showUserModal() {
                           :class="route.path === child_item.url ? 'bg-gray-200 hover:bg-gray-300' : 'bg-gray-100 hover:bg-gray-200'">
                           <Icon :name="'uil:' + item.icon" />
                           {{ child_item.title }}
-                          <SidebarMenuBadge v-if="child_item.number_projects">{{ child_item.number_projects }}
-                          </SidebarMenuBadge>
                         </SidebarMenuSubButton>
                       </NuxtLink>
                     </SidebarMenuSubItem>

@@ -4,7 +4,7 @@
 
 <template>
 
-    <div class="relative z-10 bg-gray-800 text-gray-300">
+    <div class="relative z-20 bg-gray-800 text-gray-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <div class="mb-8 text-center md:text-left">

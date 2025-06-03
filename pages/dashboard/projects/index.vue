@@ -57,10 +57,11 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
       headers: { 'content-type': 'application/json' },
       body: data
     })
+    showToast('Project created succesfully!', 'success')
     close()
     refresh()
   } catch (e) {
-    console.log(e)
+    showToast('Error:'+e, 'error')
   }
 }
 </script>

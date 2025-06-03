@@ -68,7 +68,6 @@ const checkInputs = computed(() => {
             </div>
 
         </div>
-        {{ currentData }}
         <div class="flex justify-between gap-4">
             <Button variant="ghost" @click="close">
                 Cancel
