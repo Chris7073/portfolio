@@ -15,7 +15,7 @@ interface Blocco {
 }
 
 const route = useRoute();
-const postIdFromRoute = computed(() => route.params.id as string);
+const postIdFromRoute = computed(() => Number(route.params.id));
 
 const { data: postBlocks } = await useFetch<any[]>('/api/post-blocks');
 const { data: allPostsData } = await useFetch<TPortfolioPosts[]>('/api/portfolio-posts');

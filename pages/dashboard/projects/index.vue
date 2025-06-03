@@ -3,6 +3,8 @@ definePageMeta({
   layout: 'dashboard',
   middleware: 'auth-dashboard'
 })
+import { DialogsCreateProjectDialog } from '#components';
+import { Badge } from '@/components/ui/badge'
 
 import {
   Card,
@@ -22,16 +24,45 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-const { data: portfolioProjects } = useFetch('/api/portfolio-posts');
+const { data: portfolioProjects, refresh } = useFetch('/api/portfolio-posts');
+import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 
-const dialog = useDialog()
-function addProjectDialog(){
-dialog.open({
-  body:Table,
-  title:'Add new project'
-})
+const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories');
+
+function getCategoryName(catId: string) {
+    const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
+    return cat ? cat.cat_name : 'No category'
 }
 
+function copyUrl(pId: number) {
+  navigator.clipboard.writeText(`${useRequestURL().host}/projects/${pId}`)
+  showToast("Url Copied to clipboard!", "success")
+}
+const dialog = useDialog()
+const route = useRoute()
+function addProjectDialog() {
+  dialog.open({
+    body: DialogsCreateProjectDialog,
+    title: 'Add new project',
+    onSuccess(data, close) {
+      addProject(data, close)
+    },
+  })
+}
+
+async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">, close: () => any) {
+  try {
+    await $fetch(`/api/projects/create/`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: data
+    })
+    close()
+    refresh()
+  } catch (e) {
+    console.log(e)
+  }
+}
 </script>
 <template>
   <Card>
@@ -47,37 +78,39 @@ dialog.open({
     </CardHeader>
     <CardContent class="flex flex-col gap-4">
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>
-              id
-            </TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>Project Name</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Shareable Url</TableHead>
             <TableHead>State</TableHead>
-            <TableHead class="text-right">
-              Actions
-            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow v-for="project in portfolioProjects"
             :class="!project.post_active ? 'bg-red-100 hover:bg-red-200/80' : 'bg-white'">
-            <TableCell class="font-medium">
-              {{ project.post_id }}
-            </TableCell>
-            <TableCell>{{ project.post_name }}</TableCell>
-            <TableCell>{{ project.post_active ? 'Active' : 'Disabled' }}</TableCell>
-            <TableCell class="text-right flex gap-2 justify-end">
-              <NuxtLink :to="`projects/edit/${project.post_id}`">
-                <Button size="icon" variant="outline">
-                  <Icon name="uil:setting" />
-                </Button>
-              </NuxtLink>
-              <Button size="icon" variant="destructive">
-                <Icon name="uil:trash" />
+            <TableCell class="overflow-clip max-w-[10rem]">
+              <Button variant="link" @click="navigateTo(`/dashboard/projects/edit/${project.post_id}`)"
+                class="cursor-pointer">
+                <Icon name="uil:edit" />
+                {{ project.post_name }}
               </Button>
             </TableCell>
+            <TableCell>
+              {{getCategoryName(project.post_cat)}}
+            </TableCell>
+            <TableCell>
+              <Button variant="link" @click="copyUrl(project.post_id)" class="cursor-pointer">
+                <Icon name="uil:link" />
+                {{ `${useRequestURL().host}/projects/${project.post_id}` }}
+              </Button>
+            </TableCell>
+            <TableCell class="w-[1rem]">
+              <Badge variant="outline" class="w-full flex justify-center text-white py-2"
+                :class="project.post_active ? 'bg-green-400' : 'bg-red-400'">
+              </Badge>
+            </TableCell>
+
           </TableRow>
         </TableBody>
       </Table>

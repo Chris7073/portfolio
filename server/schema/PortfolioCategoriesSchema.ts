@@ -1,6 +1,5 @@
 import {model,Schema, Types} from "mongoose";
 export type TPortfolioCats = {
-    
    cat_id:string,
    cat_name:string
 }

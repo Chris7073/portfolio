@@ -11,7 +11,6 @@ const forwarded = useForwardPropsEmits(props, emits)
   <DialogRoot
     data-slot="dialog"
     v-bind="forwarded"
-    class="z-[400]"
   >
     <slot />
   </DialogRoot>

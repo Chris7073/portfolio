@@ -7,7 +7,7 @@ const { isOpen, data, close } = useDialog();
 <template>
 
     <Dialog v-model:open="isOpen">
-        <DialogContent v-if="data" >
+        <DialogContent v-if="data" class="sm:max-w-[425px] z-[60]">
             <DialogHeader v-if="data.title || data.description">
                 <DialogTitle v-if="data.title">
                     {{ data.title }}
@@ -16,9 +16,9 @@ const { isOpen, data, close } = useDialog();
                     {{ data.description }}
                 </DialogDescription>
             </DialogHeader>
-            <component :data="data.props" :is="data.body"></component>
+            <component :data="data.props" @confirm="data.onSuccess?.($event, close)" :is="data.body"></component>
             <DialogFooter v-if="data.footer">
-            {{ data.footer }}    
+                <component :is="data.footer"></component>
             </DialogFooter>
         </DialogContent>
     </Dialog>

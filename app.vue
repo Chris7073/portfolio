@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { SpeedInsights } from "@vercel/speed-insights/nuxt"
 </script>
 <template>
-  <SpeedInsights/>
+  <!-- <SpeedInsights/> -->
   <ClientOnly>
     <DialogsGlobalDialog></DialogsGlobalDialog>
     <Toaster/>

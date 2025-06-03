@@ -2,7 +2,11 @@
 
 import { ChevronsUpDown, ChevronUp } from 'lucide-vue-next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
@@ -117,10 +121,20 @@ function showUserModal() {
             </div>
           </div>
 
-          <Button @click="logoutUser" size="icon" class="rounded-full" variant="destructive">
-            <Icon name="uil:exit" />
-          </Button>
 
+          <Popover>
+            <PopoverTrigger>
+              <Button size="icon" class="rounded-full" variant="outline">
+                <Icon name="uil:exit" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="flex flex-col gap-2" align="end">
+              <Label>Are you sure?</Label>
+              <Button @click="logoutUser">
+                Logout
+              </Button>
+            </PopoverContent>
+          </Popover>
         </SidebarMenuItem>
       </SidebarMenu>
       <div class="text-center text-black/60 font-thin text-xs">Chris 2025</div>
