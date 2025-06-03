@@ -1,5 +1,4 @@
 <template>
-  <div class="flex items-center justify-center h-full w-full">
-    <div class="w-6 h-6 m-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
+<Icon name="uil:spinner-alt" class="animate-spin text-4xl text-sky-600 dark:text-sky-400" />
+        <p class="text-slate-600 dark:text-slate-300 mt-2">Caricamento informazioni...</p>
 </template>

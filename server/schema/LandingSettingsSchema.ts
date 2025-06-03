@@ -5,7 +5,7 @@ export type TLandingSettings = {
     hero_desc: string,
     hero_bg: {
         bg_type: string,
-        bg_text_color:string,
+        bg_text_color: string,
         bg_color_1: string,
         bg_color_2: string,
         bg_image: string,
@@ -14,7 +14,17 @@ export type TLandingSettings = {
         active: boolean,
         text: string,
         link: string,
-    }[]
+    }[],
+    story: boolean,
+    story_title: string,
+    story_desc: string,
+    story_img: string,
+    story_me: [{
+        me_id:number,
+        me_icon: string,
+        me_title: string,
+        me_desc: string
+    }]
 }
 
 const LandingSettingsSchema = new Schema<TLandingSettings>({
@@ -23,6 +33,11 @@ const LandingSettingsSchema = new Schema<TLandingSettings>({
     hero_desc: { type: String },
     hero_bg: [{ type: Schema.Types.Mixed }],
     hero_button: [{ type: Schema.Types.Mixed }],
+    story: { type: Boolean },
+    story_title: { type: String },
+    story_desc: { type: String },
+    story_img: { type: String },
+    story_me: [{ type: Schema.Types.Mixed }],
 });
 
 export const landingSettingsModel = model<TLandingSettings>("landing_settings", LandingSettingsSchema);

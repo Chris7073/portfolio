@@ -12,14 +12,14 @@ const isLoading = computed(() => {
             <div class="flex flex-col gap-2">
                 <Skeleton class="w-50 bg-gray-300 h-5" />
                 <Skeleton class="w-50 bg-gray-300 h-2" />
-                <Skeleton class="w-50 bg-gray-400/80 h-10 mt-4" />
-            </div>
+                <Skeleton class="w-50 bg-gray-400/80 h-10 mt-4" />        
+            </div> 
         </div>
     </div>
     <div v-else>
         <HomeSectionsHero/>
         <Navbar />
-        <!-- <HomeSectionsMyStory/> -->
+        <HomeSectionsMyStory/>
         <HomeSectionsPortfolio />
         <Footer/>
     </div>
