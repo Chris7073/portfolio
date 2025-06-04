@@ -7,11 +7,13 @@ useHead({
 })
 
 const { data: socialLinks } = useFetch('/api/social-links-settings');
+const { data: webSettings } = useFetch('/api/web-settings');
+
 const { icons } = useSocialIcons();
 
 function getIconName(iconId: number) {
-  const found = icons.find(icon => icon.id === iconId);
-  return found ? found.icon : 'uil:globe'; 
+    const found = icons.find(icon => icon.id === iconId);
+    return found ? found.icon : 'uil:globe';
 }
 </script>
 <template>
@@ -19,7 +21,7 @@ function getIconName(iconId: number) {
         class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-4 sm:p-6 lg:p-8">
 
         <div
-            class="text-center bg-white rounded-xl shadow-2xl p-8 sm:p-10 md:p-12 max-w-lg w-full transform transition-all duration-300 hover:scale-105">
+            class="text-center bg-white rounded-xl shadow-2xl p-8 sm:p-10 md:p-12 max-w-lg w-full transform transition-all duration-300 hover:scale-101">
 
             <Icon name="pajamas:issue-type-maintenance" class="text-6xl mx-auto mb-8 text-indigo-500 animate-pulse" />
 
@@ -28,7 +30,7 @@ function getIconName(iconId: number) {
             </h1>
 
             <p class="text-md text-gray-600 mb-8 px-2">
-Work in progress..
+                {{ webSettings ? webSettings.maintenance_desc : 'Work in progress..' }}
             </p>
             <Separator label="Stay Updated" class="my-4" />
             <div class="flex justify-center gap-2">

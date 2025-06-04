@@ -9,7 +9,6 @@ const { data: websiteInfo, pending: isLoadingInfo } = await useFetch('/api/web-s
 useHead({
     title: computed(() => isLoadingInfo ? `${websiteInfo.value?.name} - ${websiteInfo.value?.desc}` : 'Caricamento...')
 })
-
 const isLoading = computed(() => {
     return isLoadingLanding.value || isLoadingPortfolio.value;
 });
@@ -17,9 +16,7 @@ const isLoading = computed(() => {
 <template>
 
     <div v-if="isLoading">
-        <Transition name="fade-out">
-            <LoadingPage />
-        </Transition>
+        <LoadingPage />
     </div>
 
     <div v-else>

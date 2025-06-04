@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard',
-  middleware:'auth-dashboard'
+  middleware: 'auth-dashboard'
 })
 
 import {
@@ -20,20 +20,26 @@ const { icons } = useSocialIcons();
 const { data: socialLinks, refresh } = useFetch('/api/social-links-settings');
 const currentSocialsLinks = ref<TSocialSettings[]>([]);
 
-watch(socialLinks, () => {
-  currentSocialsLinks.value = socialLinks.value ?? [];
+watch(socialLinks, (newVal) => {
+  if (!newVal) return;
+  currentSocialsLinks.value = JSON.parse(JSON.stringify(newVal ?? []));
 });
+
+const checkSocialChanges = computed(() => {
+  return JSON.stringify(currentSocialsLinks.value) !== JSON.stringify(socialLinks.value ?? []);
+});
+
 console.log(currentSocialsLinks.value)
 const addLinkButton = computed(() => (currentSocialsLinks.value?.length ?? 0) <= 2);
 
-const nextId = computed(()=>{
-const lastItem = currentSocialsLinks.value.at(-1);
-if(!lastItem) return 0;
-return parseInt(lastItem.id)+1
+const nextId = computed(() => {
+  const lastItem = currentSocialsLinks.value.at(-1);
+  if (!lastItem) return 0;
+  return parseInt(lastItem.id) + 1
 })
 
 function pushLinks() {
-  currentSocialsLinks.value.push({ id: (nextId.value).toString(), link: 'test',icon:3, active: true });
+  currentSocialsLinks.value.push({ id: (nextId.value).toString(), link: 'test', icon: 3, active: true });
 }
 
 function removeLink(id: string) {
@@ -59,12 +65,6 @@ async function updateSocialSettings() {
     showToast('Errore durante il salvataggio', 'error');
   }
 }
-
-
-
-const checkSocialChanges = computed(() => {
-  return true;
-});
 
 </script>
 
@@ -96,7 +96,7 @@ const checkSocialChanges = computed(() => {
                       <Label>Link {{ index + 1 }}</Label>
                       <div class="flex justify-between gap-2">
                         <Input :disabled="!link.active" placeholder="Your link" v-model="link.link" />
-                        
+
                         <Select v-model="link.icon" :disabled="!link.active">
                           <SelectTrigger>
                             <SelectValue placeholder="icon" />
@@ -105,8 +105,10 @@ const checkSocialChanges = computed(() => {
                             <SelectGroup>
                               <SelectLabel>Social icons</SelectLabel>
                               <SelectItem v-for="icon in icons" :key="icon.id" :value="icon.id">
-                                <div class="flex content-center gap-2 p-2"><Icon :name="icon.icon" class="text-xl" />{{ icon.icon }}</div>
-                                
+                                <div class="flex content-center gap-2 p-2">
+                                  <Icon :name="icon.icon" class="text-xl" />{{ icon.icon }}
+                                </div>
+
                               </SelectItem>
                             </SelectGroup>
                           </SelectContent>
@@ -141,7 +143,7 @@ const checkSocialChanges = computed(() => {
 
                       </div>
                     </div>
-                    <Button :disabled="!addLinkButton" @click="pushLinks">
+                    <Button :disabled="!addLinkButton" variant="outline" @click="pushLinks">
                       <Icon name="uil:plus" /> Add Link
                     </Button>
                   </div>

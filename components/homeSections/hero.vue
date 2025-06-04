@@ -1,8 +1,5 @@
 <script type="ts" setup>
 const { data: landingInfo, pending } = useFetch('/api/landing-settings')
-watchEffect(() => {
-  console.log('hero loaded status:', pending.value)
-})
 const backgroundColor = computed(() => {
 
   if (!landingInfo.value) return 'background-color: #CCCCCC';

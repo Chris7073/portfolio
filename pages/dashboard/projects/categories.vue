@@ -54,13 +54,30 @@ async function addCategory(data: Pick<TPortfolioCats, "cat_name" | "cat_desc">, 
         showToast('Error:' + e, 'error')
     }
 }
-
+const { data: portfolioPosts } = useFetch('/api/portfolio-posts');
 function getNumberPostsPerCat(postId: string) {
-    const { data: portfolioPosts } = useFetch('/api/portfolio-posts');
     if (portfolioPosts.value) {
         const getData = portfolioPosts.value.filter(p => p.post_cat === postId);
         return getData.length;
     } else { return [] }
+}
+
+const confirmDelete = ref('');
+
+async function deleteProject(id: string) {
+    console.log('Delete cliccato')
+    try {
+        await $fetch(`/api/categories/${id}/categories/delete/`, {
+            method: 'DELETE',
+            headers: { 'content-type': 'application/json' },
+            body: { category: id }
+        });
+        showToast('Categoria rimossa con successo', 'success');
+        refresh();
+    } catch (error) {
+        console.log(error)
+        showToast('Errore durante la rimozione della categoria', 'error');
+    }
 }
 </script>
 <template>
@@ -94,9 +111,20 @@ function getNumberPostsPerCat(postId: string) {
                         <TableCell>{{ cat.cat_name }}</TableCell>
                         <TableCell>{{ getNumberPostsPerCat(cat.cat_id) }}</TableCell>
                         <TableCell class="text-right">
-                            <Button size="icon" variant="destructive">
-                                <Icon name="uil:trash" />
-                            </Button>
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button size="icon" variant="destructive" @click="console.log(cat.cat_id)">
+                                        <Icon name="uil:trash" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent class="flex flex-col gap-2" side="bottom" align="end">
+                                    <p>type <strong>DeleteCat/{{ cat.cat_name }}</strong></p>
+                                    <Input v-model="confirmDelete" />
+                                    <Button variant="destructive"
+                                        :disabled="confirmDelete !== `DeleteCat/${cat.cat_name}` ? true : false"
+                                        @click="deleteProject(cat.cat_id)">Delete</Button>
+                                </PopoverContent>
+                            </Popover>
                         </TableCell>
                     </TableRow>
                 </TableBody>
