@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     return;
   }
-  if (webSettings.value?.maintenance) {
+  if (!webSettings.value?.maintenance) {
     return navigateTo('/maintenance');
   }
 });

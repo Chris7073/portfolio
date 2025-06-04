@@ -1,9 +1,8 @@
 <script lang='ts' setup>
-// Imposta un titolo per la pagina, utile per SEO e l'esperienza utente
 useHead({
-    title: 'Maintenance',
+    title: 'Maintenance Mode',
     meta: [
-        { name: 'robots', content: 'noindex, nofollow' } // Fondamentale per non indicizzare la pagina di manutenzione
+        { name: 'robots', content: 'noindex, nofollow' }
     ]
 })
 
@@ -12,7 +11,7 @@ const { icons } = useSocialIcons();
 
 function getIconName(iconId: number) {
   const found = icons.find(icon => icon.id === iconId);
-  return found ? found.icon : 'uil:globe'; // oppure 'default-icon'
+  return found ? found.icon : 'uil:globe'; 
 }
 </script>
 <template>
