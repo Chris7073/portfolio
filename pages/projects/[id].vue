@@ -1,15 +1,13 @@
 <script setup lang="ts">
-
 import { computed, defineAsyncComponent, type Component } from 'vue';
 import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 
 // BLOCCHI
-const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue')); // block_name: 'text'
-const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue')); // block_name: 'image'
-const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue')); // block_name: 'text-image'
+const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue'));
+const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue'));
+const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
 
-// 1. CREA UNA MAPPA DEI COMPONENTI
-// Associa il 'block_name' dal tuo DB al componente Vue corrispondente.
+// Mappa dei componenti
 const blockComponents: Record<string, Component> = {
   'text': TextBlock,
   'image': ImageBlock,
@@ -25,6 +23,17 @@ const currentPost = computed(() =>
   allPostsData.value?.find(post => post.post_id === postIdFromRoute.value)
 );
 
+// NUOVO: Computed property per ordinare i blocchi
+// Questa funzione prende i blocchi dal post corrente e li ordina
+// in base alla loro `block_position`.
+const sortedBlocks = computed(() => {
+  if (!currentPost.value || !currentPost.value.blocks) {
+    return [];
+  }
+  // Usiamo [...array] per creare una copia e non mutare lo stato originale con .sort()
+  return [...currentPost.value.blocks].sort((a, b) => a.block_position - b.block_position);
+});
+
 const isCurrentPostActive = computed(() => {
   if (!currentPost.value) {
     return false;
@@ -33,15 +42,16 @@ const isCurrentPostActive = computed(() => {
 });
 
 useHead({
-  title:currentPost.value?.post_name
+  title: currentPost.value?.post_name
 })
 </script>
 
 <template>
   <div>
     <div v-if="isCurrentPostActive && currentPost">
-      <div v-if="currentPost.blocks && currentPost.blocks.length > 0">
-        <div v-for="block in currentPost.blocks" :key="block.block_id">
+      
+      <div v-if="sortedBlocks.length > 0">
+        <div v-for="block in sortedBlocks" :key="block.block_id">
           <component
             :is="blockComponents[block.block_name]"
             v-if="blockComponents[block.block_name]"
@@ -52,6 +62,7 @@ useHead({
           </div>
         </div>
       </div>
+
       <div v-else>
         <p>Nessun blocco trovato per questa pagina.</p>
       </div>

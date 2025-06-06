@@ -12,6 +12,7 @@ export type TPortfolioPosts = {
         block_name:string;
         block_title:string;
         block_content:string;
+        block_position:number;
         hover_effect:boolean;
         image_url?:string;
         altText?:string;
@@ -35,6 +36,7 @@ const PortfolioPostsSchema = new Schema<TPortfolioPosts>({
         block_name:{ type: String, required: true },
         block_title:{ type: String, required:false, default:'block title' },
         block_content:{ type: String, required:false, default:'block content text' },
+        block_position:{type:Number,required:true,unique:true},
         hover_effect:{type:Boolean,required:true,default:false},
         image_url:{ type: String, required:false, default:'https://placehold.co/1000x1000' },
         altText:{ type: String, required: false },

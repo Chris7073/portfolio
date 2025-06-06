@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import {
+  PopoverClose
+} from 'reka-ui';
 definePageMeta({
   middleware: 'auth-dashboard'
 });
@@ -24,6 +29,7 @@ const currentProjectInfo = ref({
     block_name: string;
     block_title: string;
     block_content: string;
+    block_position: number; // Assicuriamoci che sia un numero
     hover_effect: boolean;
     image_url: string;
     altText: string;
@@ -43,11 +49,14 @@ watch(singleProject, (newProjectData) => {
       post_name: newProjectData.post_name,
       post_desc: newProjectData.post_desc,
       post_image: newProjectData.post_image ?? '',
-      blocks: (newProjectData.blocks ?? []).map(block => ({
+      // NUOVA LOGICA: Assicuriamoci che ogni blocco abbia una posizione numerica
+      blocks: (newProjectData.blocks ?? []).map((block, index) => ({
         block_id: block.block_id,
         block_name: block.block_name,
         block_title: block.block_title,
         block_content: block.block_content,
+        // Se la posizione non esiste o non è valida, usa l'indice come fallback
+        block_position: typeof block.block_position === 'number' ? block.block_position : index,
         hover_effect: block.hover_effect,
         image_url: block.image_url ?? '',
         altText: block.altText ?? '',
@@ -55,7 +64,6 @@ watch(singleProject, (newProjectData) => {
       }))
     };
 
-    // Assegna i dati formattati sia allo stato corrente che a quello originale
     currentProjectInfo.value = JSON.parse(JSON.stringify(formattedData));
     originalProjectInfo.value = JSON.parse(JSON.stringify(formattedData));
   }
@@ -64,72 +72,89 @@ watch(singleProject, (newProjectData) => {
 });
 
 /**
- * Controlla se ci sono differenze tra lo stato originale e quello corrente del progetto.
- * Restituisce 'true' se ci sono modifiche, altrimenti 'false'.
+ * NUOVO: Computed property per visualizzare i blocchi sempre ordinati.
+ * Usiamo questa nel template per il v-for.
  */
+const sortedBlocks = computed(() => {
+  // .slice() crea una copia per non mutare l'array originale con sort()
+  return currentProjectInfo.value.blocks.slice().sort((a, b) => a.block_position - b.block_position);
+});
+
+/**
+ * NUOVO: Funzione per spostare un blocco su o giù.
+ * @param blockId L'ID del blocco da spostare.
+ * @param direction La direzione dello spostamento (-1 per su, 1 per giù).
+ */
+function moveBlock(blockId: number, direction: -1 | 1) {
+  const blocks = currentProjectInfo.value.blocks;
+  const currentIndex = sortedBlocks.value.findIndex(b => b.block_id === blockId);
+
+  // Controlla se il blocco esiste e se il movimento è possibile
+  if (currentIndex === -1 || (currentIndex === 0 && direction === -1) || (currentIndex === sortedBlocks.value.length - 1 && direction === 1)) {
+    return;
+  }
+
+  // Trova il blocco con cui scambiare la posizione
+  const blockToSwapWith = sortedBlocks.value[currentIndex + direction];
+
+  // Trova i blocchi originali nell'array non ordinato
+  const currentBlockInOriginalArray = blocks.find(b => b.block_id === blockId);
+  const blockToSwapInOriginalArray = blocks.find(b => b.block_id === blockToSwapWith.block_id);
+
+  if (!currentBlockInOriginalArray || !blockToSwapInOriginalArray) return;
+
+  // Scambia le loro proprietà 'block_position'
+  const tempPosition = currentBlockInOriginalArray.block_position;
+  currentBlockInOriginalArray.block_position = blockToSwapInOriginalArray.block_position;
+  blockToSwapInOriginalArray.block_position = tempPosition;
+}
+
+
 const checkChanges = computed(() => {
-  // Se i dati originali non sono ancora stati caricati, non ci sono modifiche.
   if (!originalProjectInfo.value) {
     return false;
   }
-
-  // Il modo più semplice e robusto per confrontare due oggetti (anche annidati)
-  // è confrontare le loro rappresentazioni JSON.
-  // Questo rileva qualsiasi modifica, inclusi aggiunta/rimozione di blocchi o cambiamenti di ordine.
   const originalJson = JSON.stringify(originalProjectInfo.value);
   const currentJson = JSON.stringify(currentProjectInfo.value);
-
-  // Se le stringhe JSON sono diverse, significa che qualcosa è cambiato.
   return originalJson !== currentJson;
 });
 
 const selectBlockToAdd = ref('');
 
 const checkBlockToAdd = computed(() => {
-  if (selectBlockToAdd.value === '') {
-    return false;
-  }
-  return true;
+  return selectBlockToAdd.value !== '';
 });
 
 function addBlock() {
-  // 1. CONTROLLO DI SICUREZZA
-  //    Non fare nulla se l'utente non ha selezionato un tipo di blocco.
   if (!selectBlockToAdd.value) {
     alert("Per favore, seleziona un tipo di blocco prima di aggiungerlo.");
-    return; // Interrompe l'esecuzione della funzione qui.
+    return;
   }
 
-  // 2. CREA UN ID UNIVOCO PIÙ ROBUSTO
-  //    Usare Date.now() è un modo semplice per generare un ID temporaneo 
-  //    che ha una probabilità quasi nulla di essere duplicato sul client.
   const newBlockId = Date.now();
 
-  // 3. CREA L'OGGETTO DEL NUOVO BLOCCO
-  //    Usa il valore selezionato e imposta valori di default per le altre proprietà.
   const newBlock = {
     block_id: newBlockId,
     block_name: selectBlockToAdd.value,
     block_title: `Nuovo Blocco - ${selectBlockToAdd.value}`,
     block_content: '',
+    // MODIFICATO: Assegna la posizione successiva disponibile
+    block_position: currentProjectInfo.value.blocks.length,
     hover_effect: false,
     image_url: '',
     altText: '',
     didascalia: ''
   };
 
-  // 4. AGGIUNGI IL NUOVO BLOCCO ALL'ARRAY
   currentProjectInfo.value.blocks.push(newBlock);
-
-  console.log("Aggiunto nuovo blocco:", newBlock);
-
-  // 5. (CONSIGLIATO) RESETTA IL VALORE DEL SELECT
-  //    Questo pulisce il dropdown, pronto per una nuova selezione.
   selectBlockToAdd.value = '';
 }
 
+function removeBlock(id: number) {
+  currentProjectInfo.value.blocks = currentProjectInfo.value.blocks.filter(block => block.block_id !== id);
+}
+
 async function saveProject() {
-  console.log('save cliccato')
   try {
     await $fetch(`/api/projects/${postIdFromRoute.value}/projects/update/`, {
       method: 'POST',
@@ -143,6 +168,27 @@ async function saveProject() {
     showToast('Error while saving', 'error');
   }
 }
+
+async function deleteProject() {
+  try {
+    await $fetch(`/api/projects/${postIdFromRoute.value}/projects/delete/`, {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      body: {project:postIdFromRoute.value}
+    });
+    showToast('Project deleted succesfully', 'success');
+    navigateTo('/dashboard/projects/')
+  } catch (error) {
+    console.log(error)
+    showToast('Error while deleting', 'error');
+  }
+}
+  
+const deletionInput=ref('')
+const checkDeletion=computed(()=>{
+if(deletionInput.value === `Delete/${currentProjectInfo.value.post_name}`) return true;
+return false;
+})
 </script>
 
 <template>
@@ -151,9 +197,25 @@ async function saveProject() {
     <div class="flex flex-row gap-2">
       <Button class="bg-slate-600 hover:bg-slate-500" :disabled="!checkChanges" @click="saveProject">Save
         Project</Button>
-      <Button variant="destructive" size="icon">
+      <Popover>
+        <PopoverTrigger>
+                <Button variant="destructive" size="icon">
         <Icon name="material-symbols:delete-outline" />
       </Button>
+        </PopoverTrigger>
+        <PopoverContent align="start" side="top" class="flex flex-col gap-2">
+          <Label>Are you sure?</Label>
+          <p>to confirm deletion digit <strong>Delete/{{ currentProjectInfo.post_name }}</strong></p>
+          <Input v-model="deletionInput"/>
+          <div class="flex justify-between gap-2 mt-2">
+            <PopoverClose as-child>
+              <Button variant="secondary">Undo</Button>
+            </PopoverClose>
+            <Button :disabled="!checkDeletion" @click="deleteProject">Confirm</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+
     </div>
   </div>
   <Card class="m-4">
@@ -173,7 +235,7 @@ async function saveProject() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Fruits</SelectLabel>
+              <SelectLabel>Blocks types</SelectLabel>
               <SelectItem value="text">
                 Text Block
               </SelectItem>
@@ -189,12 +251,27 @@ async function saveProject() {
         <Button :disabled="!checkBlockToAdd" @click="addBlock">Add Block</Button>
       </div>
       <Separator label="Edit Blocks" />
-      <div v-if="currentProjectInfo.blocks && currentProjectInfo.blocks.length > 0">
 
-        <div v-for="block in currentProjectInfo.blocks" :key="block.block_id">
+      <div v-if="sortedBlocks.length > 0">
+        <div v-for="(block, index) in sortedBlocks" :key="block.block_id">
           <Accordion type="single" collapsible class="bg-slate-200 rounded-xl px-4 my-2">
-            <AccordionItem value="item-1">
-              <AccordionTrigger class="capitalize">{{ block.block_name }} Block</AccordionTrigger>
+            <AccordionItem value="item-1" class="border-b-0">
+
+              <div class="flex items-center justify-between w-full">
+                <AccordionTrigger class="capitalize flex-grow">{{ block.block_name }} Block</AccordionTrigger>
+
+                <div class="flex gap-1 ml-4 flex-shrink-0">
+                  <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, -1)" :disabled="index === 0"
+                    class="disabled:opacity-25">
+                    <Icon name="material-symbols:arrow-upward-alt-rounded" />
+                  </Button>
+                  <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, 1)"
+                    :disabled="index === sortedBlocks.length - 1" class="disabled:opacity-25">
+                    <Icon name="material-symbols:arrow-downward-alt-rounded" />
+                  </Button>
+                </div>
+              </div>
+
               <AccordionContent class="bg-slate-50 rounded-md p-4 mb-4">
                 <div v-if="['text', 'text-image'].includes(block.block_name)" class="flex flex-col gap-4">
                   <div class="border-b dark:border-slate-700 pb-4 mb-4">
@@ -246,11 +323,29 @@ async function saveProject() {
                     </div>
                   </div>
                 </div>
+
+                <Popover>
+                  <PopoverTrigger class="w-full">
+                    <Button variant="destructive" class="mt-2 w-full">Remove Block</Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" side="top" class="flex flex-col gap-2">
+                    <Label>Are you sure?</Label>
+                    <p>You are going to delete <strong>block #{{ block.block_position }}</strong></p>
+                    <div class="flex justify-between gap-2 mt-2">
+
+                      <PopoverClose as-child>
+                        <Button variant="secondary">Undo</Button>
+                      </PopoverClose>
+                      <Button @click="removeBlock(block.block_id)">Confirm</Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+
               </AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
-
       </div>
 
       <div v-else>
