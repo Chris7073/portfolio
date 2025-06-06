@@ -4,9 +4,9 @@ import { computed, defineAsyncComponent, type Component } from 'vue';
 import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 
 // BLOCCHI
-const TextBlock = defineAsyncComponent(() => import('~/components/blocks/TextBlock.vue')); // block_name: 'text'
-const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/ImageBlock.vue')); // block_name: 'image'
-const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/TextImageBlock.vue')); // block_name: 'text-image'
+const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue')); // block_name: 'text'
+const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue')); // block_name: 'image'
+const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue')); // block_name: 'text-image'
 
 // 1. CREA UNA MAPPA DEI COMPONENTI
 // Associa il 'block_name' dal tuo DB al componente Vue corrispondente.
