@@ -84,7 +84,7 @@ function showUserModal() {
               </NuxtLink>
               <div v-else>
                 <SidebarMenuButton @click="toggleItem(item.title)"
-                  class="flex justify-between items-center w-full bg-gray-100 hover:bg-gray-200">
+                  class="flex justify-between items-center w-full bg-gray-100 hover:bg-gray-200/80">
                   <div class="flex items-center gap-2">
                     <Icon :name="'uil:' + item.icon" />
                     <span>{{ item.title }}</span>
@@ -96,7 +96,7 @@ function showUserModal() {
                     <SidebarMenuSubItem>
                       <NuxtLink :to="child_item.url">
                         <SidebarMenuSubButton
-                          :class="route.path === child_item.url ? 'bg-gray-200 hover:bg-gray-300' : 'bg-gray-100 hover:bg-gray-200'">
+                          :class="route.path === child_item.url ? 'bg-gray-200 hover:bg-gray-300/80' : 'bg-gray-100 hover:bg-gray-200/80'">
                           <Icon :name="'uil:' + item.icon" />
                           {{ child_item.title }}
                         </SidebarMenuSubButton>
@@ -111,37 +111,41 @@ function showUserModal() {
       </SidebarGroup>
 
     </SidebarContent>
-    <SidebarFooter>
-
-      <SidebarMenu v-if="user">
+    <SidebarFooter class="border-t p-3"> 
+    <SidebarMenu v-if="user" class="w-full">
         <SidebarMenuItem
-          class="p-4 flex justify-between gap-2 bg-gray-200 rounded-lg inset-shadow-sm inset-shadow-gray-300">
-          <div @click="showUserModal" class="flex flex-row cursor-pointer gap-1.5">
-            <Avatar shape="circle" class="bg-blue-500 text-white font-semibold">
-              {{ user.name.charAt(0).toUpperCase() }}</Avatar>
-            <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-semibold">{{ user.name }}</span>
-              <span class="truncate text-xs">{{ user.mail }}</span>
+            class="flex justify-between items-center gap-2 rounded-lg hover:bg-accent hover:text-accent-foreground p-2"> 
+            
+            <div @click="showUserModal" class="flex items-center gap-2 cursor-pointer flex-grow min-w-0"> 
+                <Avatar shape="circle" size="sm" class="bg-primary text-primary-foreground font-semibold"> 
+                    {{ user.name.charAt(0).toUpperCase() }}
+                </Avatar>
+                <div class="flex flex-col min-w-0"> 
+                    <span class="truncate text-sm font-semibold">{{ user.name }}</span>
+                    <span class="truncate text-xs text-muted-foreground">{{ user.mail }}</span> 
+                </div>
             </div>
-          </div>
 
-
-          <Popover>
-            <PopoverTrigger>
-              <Button size="icon" class="rounded-full" variant="outline">
-                <Icon name="uil:exit" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="flex flex-col gap-2" align="end">
-              <Label>Are you sure?</Label>
-              <Button @click="logoutUser">
-                Logout
-              </Button>
-            </PopoverContent>
-          </Popover>
+            <Popover>
+                <PopoverTrigger as-child> 
+                    <Button size="icon" class="rounded-full h-8 w-8" variant="ghost"> 
+                        <Icon name="uil:exit" class="h-4 w-4" /> 
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-[230px] p-3" align="end"> 
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-center">Sei sicuro di voler uscire?</p>
+                        <Button @click="logoutUser" variant="destructive" class="w-full">
+                            Logout
+                        </Button>
+                    </div>
+                </PopoverContent>
+            </Popover>
         </SidebarMenuItem>
-      </SidebarMenu>
-      <div class="text-center text-black/60 font-thin text-xs">Chris 2025</div>
-    </SidebarFooter>
+    </SidebarMenu>
+    <div class="pt-4 pb-2 text-center text-muted-foreground text-xs"> 
+        Chris 2025
+    </div>
+</SidebarFooter>
   </Sidebar>
 </template>

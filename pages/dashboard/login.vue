@@ -49,11 +49,11 @@ async function loginUser() {
 }
 </script>
 <template>
-    <div class="flex justify-center h-screen w-full bg-blue-500/80">
+    <div class="flex justify-center h-screen w-full bg-slate-200">
         <div class="content-center">
             <Card class="w-100 h-fit">
-                <CardHeader>
-                    <CardTitle>Login</CardTitle>
+                <CardHeader class="text-center">
+                    <CardTitle class="text-xl text-slate-800">Login</CardTitle>
                     <CardDescription>Use your private code for accessing</CardDescription>
                 </CardHeader>
                 <CardContent class="flex flex-col gap-4">
@@ -74,10 +74,10 @@ async function loginUser() {
                 </CardContent>
                 <CardFooter class="flex justify-between">
                     <Button @click="router.back()" variant="ghost">
-                        <Icon name="uil:arrow-left" />go back
+                        Back
                     </Button>
                     <Button :disabled="!checkLogin" @click="loginUser">
-                        <Icon name="uil:check" />Enter
+                        Login
                     </Button>
                 </CardFooter>
             </Card>

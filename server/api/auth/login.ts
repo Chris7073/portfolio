@@ -8,10 +8,8 @@ export default defineEventHandler(async (event) => {
         const cleanPinCode = getPinCode.join('');
         const user = await UsersModel.findOne({ user_mail: body.mail });
 
-        console.log('Pin code ricevuto per la mail:', body.mail, cleanPinCode, 'verifico se è giusto...');
-
         if (!user || cleanPinCode !== user.user_special_code) {
-            console.log('Pin code errato:', cleanPinCode);
+            console.log('Pin code errato');
             return { success: false };
         }
         // Qui salvi la sessione usando nuxt-auth-utils

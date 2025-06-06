@@ -1,88 +1,61 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, type Component, type DefineComponent } from 'vue';
-import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
-//BLOCCHI
-const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue'));
-const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue'));
-const imageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
 
-interface Blocco {
-  id: string | number;
-  block_position: string | number;
-  block_name: string;
-  block_content: string;
-  [key: string]: any;
-}
+import { computed, defineAsyncComponent, type Component } from 'vue';
+import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
+
+// BLOCCHI
+const TextBlock = defineAsyncComponent(() => import('~/components/blocks/TextBlock.vue')); // block_name: 'text'
+const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/ImageBlock.vue')); // block_name: 'image'
+const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/TextImageBlock.vue')); // block_name: 'text-image'
+
+// 1. CREA UNA MAPPA DEI COMPONENTI
+// Associa il 'block_name' dal tuo DB al componente Vue corrispondente.
+const blockComponents: Record<string, Component> = {
+  'text': TextBlock,
+  'image': ImageBlock,
+  'text-image': ImageTextBlock
+};
 
 const route = useRoute();
 const postIdFromRoute = computed(() => Number(route.params.id));
 
-const { data: postBlocks } = await useFetch<any[]>('/api/post-blocks');
 const { data: allPostsData } = await useFetch<TPortfolioPosts[]>('/api/portfolio-posts');
 
+const currentPost = computed(() =>
+  allPostsData.value?.find(post => post.post_id === postIdFromRoute.value)
+);
+
 const isCurrentPostActive = computed(() => {
-  if (!allPostsData.value || !postIdFromRoute.value) {
-    return false; 
+  if (!currentPost.value) {
+    return false;
   }
-
-  const currentPost = allPostsData.value.find(
-    post => post.post_id === postIdFromRoute.value
-  );
-  if (currentPost) {
-    return currentPost.post_active === true;
-  }
-  return false;
+  return currentPost.value.post_active === true;
 });
 
-
-const blocchiCollegati = computed<Blocco[]>(() => {
-  if (!postBlocks.value || !postIdFromRoute.value) {
-    return [];
-  }
-  return postBlocks.value
-    .filter(blocco => blocco.post_id === postIdFromRoute.value)
-    .sort((a, b) => {
-      const posA = a.block_position;
-      const posB = b.block_position;
-      if (posA === undefined || posA === null) {
-        return 1;
-      }
-      if (posB === undefined || posB === null) {
-        return -1;
-      }
-      return Number(posA) - Number(posB);
-    });
-});
-
-console.log('Blocchi Collegati:', blocchiCollegati.value);
-console.log('Lunghezza Blocchi Collegati:', blocchiCollegati.value?.length);
-
-type BlockComponent = DefineComponent<{ blockData: Blocco }, {}, any> | Component;
-
-const componentMap: Record<string, BlockComponent> = {
-  'text': TextBlock,
-  'image': ImageBlock,
-  'text-image':imageTextBlock,
-};
-
-function getComponentForBlock(blockType: string) {
-  return componentMap[blockType];
-}
+useHead({
+  title:currentPost.value?.post_name
+})
 </script>
+
 <template>
   <div>
-    <div>
-      <div v-if="isCurrentPostActive">
-        <div v-if="blocchiCollegati.length > 0" class="bg-blue-200">
-          <div v-for="blocco in blocchiCollegati" :key="blocco.id" class="blocco-bg-blue-400">
-            <component :is="getComponentForBlock(blocco.block_name)" :blockData="blocco" />
+    <div v-if="isCurrentPostActive && currentPost">
+      <div v-if="currentPost.blocks && currentPost.blocks.length > 0">
+        <div v-for="block in currentPost.blocks" :key="block.block_id">
+          <component
+            :is="blockComponents[block.block_name]"
+            v-if="blockComponents[block.block_name]"
+            :blockData="block"
+          />
+          <div v-else class="text-red-500">
+            Attenzione: tipo di blocco '{{ block.block_name }}' non riconosciuto.
           </div>
         </div>
-        <div v-else>
-          <p>Nessun blocco trovato per questa pagina.</p>
-        </div>
       </div>
-      <Error v-else/>
+      <div v-else>
+        <p>Nessun blocco trovato per questa pagina.</p>
+      </div>
     </div>
+    <Error v-else />
   </div>
 </template>

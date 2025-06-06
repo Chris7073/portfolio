@@ -1,4 +1,3 @@
-import { PostBlockModel } from '../../../../schema/PostBlockSchema';
 import { PortfolioPostsModel } from '../../../../schema/PortfolioPostsSchema';
 
 export default defineEventHandler(async event => {
@@ -40,19 +39,12 @@ export default defineEventHandler(async event => {
         // Log opzionale, puoi rimuoverlo se vuoi una console più pulita
         console.log(`SERVER: PortfolioPostsModel deletion for post_id ${pidAsNumber} - deletedCount: ${portfolioDeleteResult.deletedCount}`);
 
-        // Tentativo di cancellazione da PostBlockModel
-        // "se esistono li cancella altrimenti AMEN"
-        const postBlockDeleteResult = await PostBlockModel.deleteMany({ post_id: pidAsNumber });
-        // Log opzionale
-        console.log(`SERVER: PostBlockModel deletion for post_id ${pidAsNumber} - deletedCount: ${postBlockDeleteResult.deletedCount}`);
-
         // L'operazione è considerata un successo a livello di API,
         // indipendentemente da quanti documenti sono stati effettivamente cancellati.
         return {
             ok: true,
             message: `Deletion process completed for ID: ${pidAsNumber}.`,
-            portfolioItemsDeleted: portfolioDeleteResult.deletedCount,
-            postBlockItemsDeleted: postBlockDeleteResult.deletedCount
+            portfolioItemsDeleted: portfolioDeleteResult.deletedCount
         };
 
     } catch (dbError) {

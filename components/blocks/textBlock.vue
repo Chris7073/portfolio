@@ -2,7 +2,7 @@
     interface TextBlockData {
       id: string | number;
       block_name: 'text';
-      block_title: string;
+      block_title?: string;
       block_content?: string;
     }
 
