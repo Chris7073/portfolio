@@ -10,39 +10,31 @@ function getIconName(iconId: number) {
   return found ? found.icon : 'uil:globe'; // oppure 'default-icon'
 }
 
-const dialog = useDialog();
-function showContattiDialog() {
-    dialog.open({
-        body: DialogsContatti,
-        title: "Contatti",
-        description: "Descrizione",
-    })
-}
 </script>
 
 <template>
-    <div class="bg-gray-50/80 w-full p-4 sticky top-0 backdrop-blur-sm shadow-md z-[1000]">
-        <div class="flex justify-between">
-            <NuxtLink to="/">
-                <h1 class="uppercase font-thin grid h-full content-center">{{ websiteInfo?.name }}</h1>
-            </NuxtLink>
-            <div class="flex gap-4">
-                <div class="flex gap-2">
-                    <div v-for="social of socialLinks">
-                        <NuxtLink v-if="social.active" :to="social.link"  target="_blank">
-                            <Button size="icon"
-                                class="bg-white/80 text-blue-500 text-xl border-blue-500/50 hover:bg-blue-500 hover:text-white">
-                                <Icon :name="getIconName(social.icon)" />
-                            </Button>
-                        </NuxtLink>
-                    </div>
+  <header class="bg-gray-50/80 w-full p-4 sticky top-0 backdrop-blur-sm border-b border-gray-200/60 shadow-sm z-[1000]">
+    <div class="container mx-auto flex justify-between items-center">
+      
+      <NuxtLink to="/">
+        <h1 class="uppercase font-semibold text-slate-800 tracking-wider">
+          {{ websiteInfo?.name }}
+        </h1>
+      </NuxtLink>
 
-                </div>
-
-                <Button @click="showContattiDialog()"
-                    class="bg-linear-to-t from-indigo-500 to-sky-500 cursor-pointer">Contattami</Button>
-            </div>
+      <div class="flex gap-2">
+        <div v-for="social of socialLinks">
+          <NuxtLink v-if="social.active" :to="social.link" target="_blank">
+            <Button 
+              size="icon"
+              class="bg-transparent rounded-full text-slate-500 hover:text-blue-600 hover:bg-blue-100/50 transition-colors duration-300"
+            >
+              <Icon :name="getIconName(social.icon)" class="text-xl" />
+            </Button>
+          </NuxtLink>
         </div>
-    </div>
+      </div>
 
+    </div>
+  </header>
 </template>

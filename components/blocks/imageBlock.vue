@@ -19,20 +19,20 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div v-if="props.blockData.image_url"> 
-    <div class="group relative h-100 md:h-dvh overflow-hidden">
-      <img 
-        class="w-full bg-cover bg-center md:bg-bottom h-auto block transition-transform duration-300 ease-in-out"
+  <div v-if="props.blockData.image_url">
+    <div class="group relative h-[50dvh] md:h-dvh overflow-hidden">
+      <img
+        class="w-full h-full block object-cover object-center transition-transform duration-300 ease-in-out"
         :class="props.blockData.hover_effect ? 'group-hover:scale-105' : ''"
-        :src="props.blockData.image_url" 
+        :src="props.blockData.image_url"
         :alt="props.blockData.altText || 'Immagine del blocco'"
       >
-      <div 
-        v-if="props.blockData.hover_effect" 
+      <div
+        v-if="props.blockData.hover_effect"
         class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
         aria-hidden="true">
       </div>
-      <div 
+      <div
         v-if="props.blockData.didascalia && props.blockData.hover_effect"
         class="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out"
       >
@@ -43,6 +43,6 @@ const props = defineProps<{
     </div>
   </div>
   <div v-else>
-    <p>Immagine non configurata o non disponibile.</p> 
+    <p>Immagine non configurata o non disponibile.</p>
   </div>
 </template>

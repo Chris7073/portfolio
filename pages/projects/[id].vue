@@ -44,6 +44,9 @@ const isCurrentPostActive = computed(() => {
 useHead({
   title: currentPost.value?.post_name
 })
+
+console.log(isCurrentPostActive.value)
+console.log(currentPost)
 </script>
 
 <template>
