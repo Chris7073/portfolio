@@ -112,140 +112,150 @@ function invertColors() {
 }
 </script>
 <template>
-            <Accordion type="single" collapsible class="bg-gray-100 border-2 border-gray-200 rounded-lg px-4">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <span>
-                HERO
-                <Badge class="ml-4" variant="outline"
-                  :class="landingInfo?.hero ? 'bg-green-500/80 text-white' : 'bg-gray-200'">{{ landingInfo?.hero ?
-                    'Enabled' : 'Disabled' }}</Badge>
-              </span>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Card>
-                <CardContent class="p-6">
-                  <div class="flex gap-2">
-                    <Checkbox v-model="currentLandingInfo.hero" />
-                    <div class="grid gap-1.5 leading-none">
-                      <Label for="terms1"
-                        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Activate Hero
-                      </Label>
-                      <p class="text-sm text-muted-foreground">
-                        This shows or hide the Hero on your landing page
-                      </p>
+  <Accordion type="single" collapsible class="bg-gray-100 border-2 border-gray-200 rounded-lg px-4">
+    <AccordionItem value="item-1">
+      <AccordionTrigger>
+        <span>
+          HERO
+          <Badge class="ml-4" variant="outline"
+            :class="landingInfo?.hero ? 'bg-green-500/80 text-white' : 'bg-gray-200'">{{ landingInfo?.hero ?
+              'Enabled' : 'Disabled' }}</Badge>
+        </span>
+      </AccordionTrigger>
+      <AccordionContent>
+        <Card>
+          <CardContent class="p-6">
+            <div class="flex gap-2">
+              <Checkbox v-model="currentLandingInfo.hero" />
+              <div class="grid gap-1.5 leading-none">
+                <Label for="terms1"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Activate Hero
+                </Label>
+                <p class="text-sm text-muted-foreground">
+                  This shows or hide the Hero on your landing page
+                </p>
+              </div>
+            </div>
+            <div v-if="currentLandingInfo.hero" class="pt-8 grid gap-4">
+              <div>
+                <Label for="hero_title">Title</Label>
+                <Input type="text" id="hero_title" v-model="currentLandingInfo.hero_title" />
+              </div>
+              <div>
+                <Label for="hero_desc">Description</Label>
+                <Input type="text" id="hero_desc" v-model="currentLandingInfo.hero_desc" />
+              </div>
+              <div>
+                <Label for="hero_text_color">Text Color</Label>
+                <Input class="h-16 w-20" type="color" id="hero_text_color"
+                  v-model="currentLandingInfo.hero_bg[0].bg_text_color" />
+              </div>
+              <Separator class="my-4" label="Button" />
+              <div class="flex gap-2">
+                <Checkbox v-model="currentLandingInfo.hero_button[0].active" />
+                <div class="grid gap-1.5 leading-none">
+                  <Label for="terms1"
+                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Button
+                  </Label>
+                  <p class="text-sm text-muted-foreground">
+                    This shows or hide a button in your Hero Section
+                  </p>
+                </div>
+              </div>
+              <div v-if="currentLandingInfo.hero_button[0].active" class="pt-4 grid gap-4">
+                <div>
+                  <Label for="hero_button_text">Button Text</Label>
+                  <Input type="text" id="hero_button_text" v-model="currentLandingInfo.hero_button[0].text" />
+                </div>
+                <div>
+                  <Label for="hero_button_link">Destination Link</Label>
+                  <Input type="text" id="hero_button_link" v-model="currentLandingInfo.hero_button[0].link" />
+                </div>
+              </div>
+
+              <Separator class="my-4" label="Background" />
+
+              <div class="flex flex-col gap-2">
+                <Label>Background type</Label>
+                <Select v-model="currentLandingInfo.hero_bg[0].bg_type">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Background type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="solid">
+                        Solid
+                      </SelectItem>
+                      <SelectItem value="linear">
+                        Linear
+                      </SelectItem>
+                      <SelectItem value="radial">
+                        Radial
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div class="flex flex-col gap-4">
+                <div class="flex gap-2 justify-between">
+                  <div>
+                    <Label for="hero_bg_1">
+                      {{ currentLandingInfo.hero_bg[0].bg_type === "solid" ? 'Background Color' : 'Color 1' }}
+                    </Label>
+                    <Input class="h-16 w-20" type="color" id="hero_bg_1"
+                      v-model="currentLandingInfo.hero_bg[0].bg_color_1" />
+                  </div>
+
+                  <div v-if="currentLandingInfo.hero_bg[0].bg_type !== 'solid'" class="content-center">
+                    <Button size="icon" @click="invertColors">
+                      <Icon name="uil:sync" class="text-xl" />
+                    </Button>
+                  </div>
+                  <div v-if="currentLandingInfo.hero_bg[0].bg_type !== 'solid'">
+                    <div>
+                      <Label for="hero_bg_2">Color 2</Label>
+                      <Input class="h-16 w-20" type="color" id="hero_bg_2"
+                        v-model="currentLandingInfo.hero_bg[0].bg_color_2" />
                     </div>
                   </div>
-                  <div v-if="currentLandingInfo.hero" class="pt-8 grid gap-4">
-                    <div>
-                      <Label for="hero_title">Title</Label>
-                      <Input type="text" id="hero_title" v-model="currentLandingInfo.hero_title" />
-                    </div>
-                    <div>
-                      <Label for="hero_desc">Description</Label>
-                      <Input type="text" id="hero_desc" v-model="currentLandingInfo.hero_desc" />
-                    </div>
-                    <div>
-                      <Label for="hero_text_color">Text Color</Label>
-                      <Input class="h-16 w-20" type="color" id="hero_text_color"
-                        v-model="currentLandingInfo.hero_bg[0].bg_text_color" />
-                    </div>
-                    <Separator class="my-4" label="Button" />
-                    <div class="flex gap-2">
-                      <Checkbox v-model="currentLandingInfo.hero_button[0].active" />
-                      <div class="grid gap-1.5 leading-none">
-                        <Label for="terms1"
-                          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Button
-                        </Label>
-                        <p class="text-sm text-muted-foreground">
-                          This shows or hide a button in your Hero Section
-                        </p>
-                      </div>
-                    </div>
-                    <div v-if="currentLandingInfo.hero_button[0].active" class="pt-4 grid gap-4">
-                      <div>
-                        <Label for="hero_button_text">Button Text</Label>
-                        <Input type="text" id="hero_button_text" v-model="currentLandingInfo.hero_button[0].text" />
-                      </div>
-                      <div>
-                        <Label for="hero_button_link">Destination Link</Label>
-                        <Input type="text" id="hero_button_link" v-model="currentLandingInfo.hero_button[0].link" />
-                      </div>
-                    </div>
+                </div>
 
-                    <Separator class="my-4" label="Background" />
+                <Separator class="my-4" label="Background Image" />
 
-                    <div class="flex flex-col gap-2">
-                      <Label>Background type</Label>
-                      <Select v-model="currentLandingInfo.hero_bg[0].bg_type">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Background type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="solid">
-                              Solid
-                            </SelectItem>
-                            <SelectItem value="linear">
-                              Linear
-                            </SelectItem>
-                            <SelectItem value="radial">
-                              Radial
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                      <div class="flex gap-2 justify-between">
-                        <div>
-                          <Label for="hero_bg_1">
-                            {{ currentLandingInfo.hero_bg[0].bg_type === "solid" ? 'Background Color' : 'Color 1' }}
-                          </Label>
-                          <Input class="h-16 w-20" type="color" id="hero_bg_1"
-                            v-model="currentLandingInfo.hero_bg[0].bg_color_1" />
-                        </div>
+                <div>
+                  <Label for="hero_title">Image Url</Label>
+                  <Input type="text" id="hero_title" v-model="currentLandingInfo.hero_bg[0].bg_image" />
+                  <img v-if="currentLandingInfo.hero_bg[0].bg_image" :src="currentLandingInfo.hero_bg[0].bg_image"
+                    class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
+                </div>
 
-                        <div v-if="currentLandingInfo.hero_bg[0].bg_type !== 'solid'" class="content-center">
-                          <Button size="icon" @click="invertColors">
-                            <Icon name="uil:sync" class="text-xl" />
-                          </Button>
-                        </div>
-                        <div v-if="currentLandingInfo.hero_bg[0].bg_type !== 'solid'">
-                          <div>
-                            <Label for="hero_bg_2">Color 2</Label>
-                            <Input class="h-16 w-20" type="color" id="hero_bg_2"
-                              v-model="currentLandingInfo.hero_bg[0].bg_color_2" />
-                          </div>
-                        </div>
-                      </div>
-                      <Separator class="my-4" label="Preview" />
-                      <div class="col-span-3">
-                        <div class="h-100 flex justify-center" :style="stylePreview">
-                          <div class="content-center text-center h-full">
-                            <Icon name="uil:user" class="text-5xl" />
-                            <div class="text-4xl">{{ currentLandingInfo.hero_title }}</div>
-                            <div class="pb-6 opacity-80">{{ currentLandingInfo.hero_desc }}</div>
-                            <div v-if="currentLandingInfo.hero_button[0].active">
+                <Separator class="my-4" label="Preview" />
+                <div class="col-span-3">
+                  <div class="h-100 flex justify-center" :style="stylePreview">
+                    <div class="content-center text-center h-full">
+                      <Icon name="uil:user" class="text-5xl" />
+                      <div class="text-4xl">{{ currentLandingInfo.hero_title }}</div>
+                      <div class="pb-6 opacity-80">{{ currentLandingInfo.hero_desc }}</div>
+                      <div v-if="currentLandingInfo.hero_button[0].active">
 
-                              <Button
-                                class="text-xl p-8 rounded-full bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
-                                  currentLandingInfo.hero_button[0].text }}
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
+                        <Button
+                          class="text-xl p-8 rounded-full bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
+                            currentLandingInfo.hero_button[0].text }}
+                        </Button>
                       </div>
                     </div>
                   </div>
-                  <Button class="my-6 w-full" :disabled="!checkHeroChanges" @click="updateHeroSettings">Save Hero
-                    Settings</Button>
+                </div>
+              </div>
+            </div>
+            <Button class="my-6 w-full" :disabled="!checkHeroChanges" @click="updateHeroSettings">Save Hero
+              Settings</Button>
 
-                </CardContent>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          </CardContent>
+        </Card>
+      </AccordionContent>
+    </AccordionItem>
+  </Accordion>
 </template>

@@ -17,7 +17,7 @@ const blockComponents: Record<string, Component> = {
 const route = useRoute();
 const postIdFromRoute = computed(() => Number(route.params.id));
 
-const { data: allPostsData } = await useFetch<TPortfolioPosts[]>('/api/portfolio-posts');
+const { data: allPostsData,pending } = useFetch<TPortfolioPosts[]>('/api/portfolio-posts');
 
 const currentPost = computed(() =>
   allPostsData.value?.find(post => post.post_id === postIdFromRoute.value)
@@ -50,7 +50,10 @@ console.log(currentPost)
 </script>
 
 <template>
-  <div>
+      <div v-if="pending">
+        <LoadingPage />
+    </div>
+  <div v-else>
     <div v-if="isCurrentPostActive && currentPost">
       
       <div v-if="sortedBlocks.length > 0">

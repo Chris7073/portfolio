@@ -7,7 +7,7 @@ const { data: storyInfo, pending } = useFetch('/api/landing-settings')
 </script>
 
 <template>
-  <section v-if="storyInfo && storyInfo.story" class="relative z-20 bg-slate-100 dark:bg-slate-900 py-16 lg:py-24 px-4">
+  <section id="about" v-if="storyInfo && storyInfo.story" class="relative z-20 bg-slate-100 dark:bg-slate-900 py-16 lg:py-24 px-4">
     <div class="container mx-auto">
       <div class="text-center mb-12 lg:mb-16">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 dark:text-white mb-4">

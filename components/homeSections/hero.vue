@@ -1,5 +1,5 @@
 <script type="ts" setup>
-const { data: landingInfo } = await useFetch('/api/landing-settings')
+const { data: landingInfo, pending } = useFetch('/api/landing-settings')
 const backgroundColor = computed(() => {
 
   if (!landingInfo.value) return 'background-color: #CCCCCC';
@@ -16,15 +16,30 @@ const backgroundColor = computed(() => {
 }
 );
 
-const fixedHeaderElement = ref(null);
-const maxBrightness = 1.0; 
-const minBrightness = 0.4;  
+const backgroundImageStyle = computed(() => {
+  const imageUrl = landingInfo.value?.hero_bg?.[0]?.bg_image;
 
-let scrollEffectRange = 200; 
+  if (imageUrl) {
+    return {
+      backgroundImage: `url(${imageUrl})`,
+      backgroundRepeat: 'repeat',
+      backgroundPosition: 'center',
+      backgroundSize: '80px', // Pattern con immagini piccole
+      opacity: 0.02 // Opacità al minimo, applicata SOLO a questo livello!
+    };
+  }
+  return {};
+});
+
+const fixedHeaderElement = ref(null);
+const maxBrightness = 1.0;
+const minBrightness = 0.4;
+
+let scrollEffectRange = 200;
 
 const handleScroll = () => {
   if (!fixedHeaderElement.value) {
-    return; 
+    return;
   }
 
   const scrollY = window.scrollY;
@@ -32,7 +47,7 @@ const handleScroll = () => {
   const currentBrightness = maxBrightness - (maxBrightness - minBrightness) * progress;
 
   window.requestAnimationFrame(() => {
-    if (fixedHeaderElement.value) { 
+    if (fixedHeaderElement.value) {
       fixedHeaderElement.value.style.filter = `brightness(${currentBrightness})`;
     }
   });
@@ -65,6 +80,7 @@ onUnmounted(() => {
     </div>
     <div v-else>
       <div v-if="landingInfo?.hero" class="grid h-dvh " :style="backgroundColor">
+        <div class="absolute inset-0 z-0" :style="backgroundImageStyle"></div>
         <div class="content-center text-center h-full" :style="'color:' + landingInfo.hero_bg[0].bg_text_color">
           <Icon name="uil:user" class="text-5xl" />
           <div class="text-4xl">{{ landingInfo.hero_title }}</div>
