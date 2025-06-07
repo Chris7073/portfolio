@@ -2,6 +2,7 @@
 import { computed, defineAsyncComponent, type Component } from 'vue';
 import Navbar from '~/components/navbar.vue';
 import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
+import { Lit } from "litlyx-js"
 
 // BLOCCHI
 const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue'));
@@ -45,9 +46,6 @@ const isCurrentPostActive = computed(() => {
 useHead({
   title: currentPost.value?.post_name
 })
-
-console.log(isCurrentPostActive.value)
-console.log(currentPost)
 </script>
 
 <template>

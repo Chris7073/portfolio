@@ -21,6 +21,7 @@ useHead({
 const isLoading = computed(() => {
     return landing.value || posts.value || website.value;
 });
+
 </script>
 <template>
     <div v-if="isLoading">
