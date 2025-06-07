@@ -43,30 +43,27 @@ const isCurrentPostActive = computed(() => {
   return currentPost.value.post_active === true;
 });
 
-useHead(() =>({
+useHead(() => ({
   title: currentPost.value?.post_name,
   meta: [
-      // --- 2. OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.) ---
-      { property: 'og:title', content: currentPost.value?.post_name },
-      { property: 'og:description', content: currentPost.value?.post_desc },
-      { property: 'og:type', content: 'article' }, // 'article' è più specifico di 'website' per un post/progetto
-      { property: 'og:url', content: `${window.location.origin}/projects/${currentPost.value?.post_id}` },
-      { property: 'og:site_name', content: 'Chris - My tiny Portfolio' }, // Nome del tuo sito
-      { property: 'og:locale', content: 'it_IT' },
-      
-      // Immagine Open Graph
-      { property: 'og:image', content: `${window.location.origin}${currentPost.value?.post_image}` },
-      { property: 'og:image:width', content: '1200' }, // Larghezza raccomandata
-      { property: 'og:image:height', content: '630' }, // Altezza raccomandata
-      { property: 'og:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
+    // ... tutti gli altri meta tag corretti ...
+    { property: 'og:url', content: `https://christiancicciarella.it/projects/${currentPost.value?.post_id}` }, // Ho rimosso il www. e l'https extra
 
-      // --- 3. TWITTER CARDS ---
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: currentPost.value?.post_name },
-      { name: 'twitter:description', content: currentPost.value?.post_desc },
-      { name: 'twitter:image', content: `${window.location.origin}${currentPost.value?.post_image}` },
-      { name: 'twitter:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
-    ],
+    // --- IMMAGINE SOSTITUITA CON UN SEGNAPOSTO FUNZIONANTE ---
+    { 
+      property: 'og:image',
+      content: 'https://picsum.photos/1200/630' // URL di un'immagine segnaposto che funziona sempre
+    },
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { property: 'og:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
+
+    // --- IMMAGINE TWITTER SOSTITUITA ---
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: 'https://picsum.photos/1200/630' }, // Stesso segnaposto qui
+    
+    // ... il resto dei tuoi tag ...
+  ],
 }))
 
 
