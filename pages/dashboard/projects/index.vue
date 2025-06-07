@@ -35,10 +35,7 @@ function getCategoryName(catId: string) {
     return cat ? cat.cat_name : 'No category'
 }
 
-function copyUrl(pId: number) {
-  navigator.clipboard.writeText(`${useRequestURL().host}/projects/${pId}`)
-  showToast("Url Copied to clipboard!", "success")
-}
+
 const dialog = useDialog()
 const route = useRoute()
 function addProjectDialog() {
@@ -51,10 +48,14 @@ function addProjectDialog() {
   })
 }
 
+function copyUrl(pId: number) {
+  navigator.clipboard.writeText(`${window.location.origin}/projects/${pId}`)
+  showToast("Url Copied to clipboard!", "success")
+}
 async function shareProject(pId: number, projectTitle?: string) {
   // Controlliamo se la Web Share API è supportata
   if (navigator.share) {
-    const projectUrl = `${useRequestURL().host}/projects/${pId}`;
+    const projectUrl = `${window.location.origin}/projects/${pId}`;
 
     const shareData = {
       title: projectTitle || 'Check out this project', // Usa il titolo se fornito
@@ -63,7 +64,7 @@ async function shareProject(pId: number, projectTitle?: string) {
     };
 
     try {
-      await navigator.share(shareData);
+      await navigator.share();
       // Feedback opzionale per l'utente, anche se la condivisione nativa è già chiara
       showToast("Sharing dialog opened!", "success"); 
     } catch (err) {
