@@ -58,7 +58,7 @@ async function shareProject(pId: number, projectTitle?: string) {
 
     const shareData = {
       title: projectTitle || 'Check out this project', // Usa il titolo se fornito
-      text: `I found this project and wanted to share it with you: ${projectTitle || ''}`,
+      text: `Check my project ${projectTitle || ''}!`,
       url: projectUrl,
     };
 
@@ -129,7 +129,7 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
               {{getCategoryName(project.post_cat)}}
             </TableCell>
             <TableCell>
-              <Button variant="link" @click="shareProject(project.post_id)" class="cursor-pointer">
+              <Button variant="link" @click="shareProject(project.post_id,project.post_name)" class="cursor-pointer">
                 <Icon name="uil:link" />
                 {{ `${useRequestURL().host}/projects/${project.post_id}` }}
               </Button>
