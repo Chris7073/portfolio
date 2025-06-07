@@ -46,31 +46,26 @@ const isCurrentPostActive = computed(() => {
 useHead(() =>({
   title: currentPost.value?.post_name,
   meta: [
-      { 
-        name: 'description', 
-        content: currentPost.value?.post_desc // Assumendo che tu abbia una descrizione
-      },
-      // --- TAG OPEN GRAPH (I PIÙ IMPORTANTI) ---
-      { 
-        property: 'og:title', 
-        content: currentPost.value?.post_name // Il titolo per l'anteprima di WhatsApp, etc.
-      },
-      { 
-        property: 'og:description', 
-        content: currentPost.value?.post_desc
-      },
-      { 
-        property: 'og:url', 
-        content: `https://www.christiancicciarella.it/projects/${currentPost.value?.post_id}` 
-      },
-      { 
-        property: 'og:image', 
-        content: currentPost.value?.post_image // URL di un'immagine rappresentativa del progetto
-      },
-      { 
-        property: 'og:type', 
-        content: 'website' 
-      },
+      // --- 2. OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.) ---
+      { property: 'og:title', content: currentPost.value?.post_name },
+      { property: 'og:description', content: currentPost.value?.post_desc },
+      { property: 'og:type', content: 'article' }, // 'article' è più specifico di 'website' per un post/progetto
+      { property: 'og:url', content: `https://www.christiancicciarella.it/projects/${currentPost.value?.post_id}` },
+      { property: 'og:site_name', content: 'Chris - My tiny Portfolio' }, // Nome del tuo sito
+      { property: 'og:locale', content: 'it_IT' },
+      
+      // Immagine Open Graph
+      { property: 'og:image', content: currentPost.value?.post_image },
+      { property: 'og:image:width', content: '1200' }, // Larghezza raccomandata
+      { property: 'og:image:height', content: '630' }, // Altezza raccomandata
+      { property: 'og:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
+
+      // --- 3. TWITTER CARDS ---
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: currentPost.value?.post_name },
+      { name: 'twitter:description', content: currentPost.value?.post_desc },
+      { name: 'twitter:image', content: currentPost.value?.post_image },
+      { name: 'twitter:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
     ],
 }))
 </script>
