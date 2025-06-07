@@ -31,8 +31,8 @@ import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories');
 
 function getCategoryName(catId: string) {
-    const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
-    return cat ? cat.cat_name : 'No category'
+  const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
+  return cat ? cat.cat_name : 'No category'
 }
 
 
@@ -52,19 +52,23 @@ function copyUrl(pId: number) {
   navigator.clipboard.writeText(`${window.location.origin}/projects/${pId}`)
   showToast("Url Copied to clipboard!", "success")
 }
+const requestURL = useRequestURL(); // Inizializza il composable una volta
+
 async function shareProject(pId: number, projectTitle?: string) {
   if (navigator.share) {
-    const projectUrl = `${window.location.origin}/projects/${pId}`;
+    // SOSTITUZIONE: usiamo requestURL.origin invece di window.location.origin
+    const projectUrl = `${requestURL.origin}/projects/${pId}`;
 
     const shareData = {
-      title: projectTitle || 'Check out this project', // Usa il titolo se fornito
+      title: projectTitle || 'Check out this project',
       text: `Check my project ${projectTitle || ''}!`,
       url: projectUrl,
     };
+
     try {
-      await navigator.share({title:projectTitle,text:`Check my project ${projectTitle || ''}!`,url:projectUrl});
+      await navigator.share(shareData);
       // Feedback opzionale per l'utente, anche se la condivisione nativa è già chiara
-      showToast("Sharing dialog opened!", "success"); 
+      showToast("Sharing dialog opened!", "success");
     } catch (err) {
       // Gestisce il caso in cui l'utente annulla la condivisione
       if (err instanceof Error && err.name !== 'AbortError') {
@@ -88,7 +92,7 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
     close()
     refresh()
   } catch (e) {
-    showToast('Error:'+e, 'error')
+    showToast('Error:' + e, 'error')
   }
 }
 </script>
@@ -125,10 +129,10 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
               </Button>
             </TableCell>
             <TableCell>
-              {{getCategoryName(project.post_cat)}}
+              {{ getCategoryName(project.post_cat) }}
             </TableCell>
             <TableCell>
-              <Button variant="link" @click="shareProject(project.post_id,project.post_name)" class="cursor-pointer">
+              <Button variant="link" @click="shareProject(project.post_id, project.post_name)" class="cursor-pointer">
                 <Icon name="uil:link" />
                 {{ `${useRequestURL().host}/projects/${project.post_id}` }}
               </Button>

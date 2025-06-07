@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
-ssr:false,
+ssr:true,
   modules: ['shadcn-nuxt', '@nuxt/icon', 'nuxt-auth-utils'],
   shadcn: {
     /**
