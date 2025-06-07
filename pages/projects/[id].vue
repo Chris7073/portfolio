@@ -44,7 +44,34 @@ const isCurrentPostActive = computed(() => {
 });
 
 useHead({
-  title: currentPost.value?.post_name
+  title: currentPost.value?.post_name,
+  meta: [
+      { 
+        name: 'description', 
+        content: currentPost.value?.post_desc // Assumendo che tu abbia una descrizione
+      },
+      // --- TAG OPEN GRAPH (I PIÙ IMPORTANTI) ---
+      { 
+        property: 'og:title', 
+        content: currentPost.value?.post_name // Il titolo per l'anteprima di WhatsApp, etc.
+      },
+      { 
+        property: 'og:description', 
+        content: currentPost.value?.post_desc
+      },
+      { 
+        property: 'og:url', 
+        content: `https://www.christiancicciarella.it/projects/${currentPost.value?.post_id}` 
+      },
+      { 
+        property: 'og:image', 
+        content: currentPost.value?.post_image // URL di un'immagine rappresentativa del progetto
+      },
+      { 
+        property: 'og:type', 
+        content: 'website' 
+      },
+    ],
 })
 </script>
 

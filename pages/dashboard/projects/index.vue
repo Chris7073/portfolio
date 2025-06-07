@@ -53,7 +53,6 @@ function copyUrl(pId: number) {
   showToast("Url Copied to clipboard!", "success")
 }
 async function shareProject(pId: number, projectTitle?: string) {
-  // Controlliamo se la Web Share API è supportata
   if (navigator.share) {
     const projectUrl = `${window.location.origin}/projects/${pId}`;
 
@@ -62,9 +61,8 @@ async function shareProject(pId: number, projectTitle?: string) {
       text: `Check my project ${projectTitle || ''}!`,
       url: projectUrl,
     };
-
     try {
-      await navigator.share();
+      await navigator.share(shareData);
       // Feedback opzionale per l'utente, anche se la condivisione nativa è già chiara
       showToast("Sharing dialog opened!", "success"); 
     } catch (err) {
