@@ -88,6 +88,7 @@ onUnmounted(() => {
           <div v-if="landingInfo.hero_button[0].active" class="relative z-5">
             <NuxtLink :to="landingInfo.hero_button[0].link">
               <Button
+              @click="Lit.event('Clicked Hero Button')"
                 class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
                   landingInfo.hero_button[0].text }}</Button>
             </NuxtLink>
