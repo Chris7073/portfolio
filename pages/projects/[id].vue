@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, type Component } from 'vue';
+import Navbar from '~/components/navbar.vue';
 import type { TPortfolioPosts } from '~/server/schema/PortfolioPostsSchema';
 
 // BLOCCHI
@@ -17,7 +18,7 @@ const blockComponents: Record<string, Component> = {
 const route = useRoute();
 const postIdFromRoute = computed(() => Number(route.params.id));
 
-const { data: allPostsData,pending } = useFetch<TPortfolioPosts[]>('/api/portfolio-posts');
+const { data: allPostsData, pending } = useFetch<TPortfolioPosts[]>('/api/portfolio-posts');
 
 const currentPost = computed(() =>
   allPostsData.value?.find(post => post.post_id === postIdFromRoute.value)
@@ -50,29 +51,52 @@ console.log(currentPost)
 </script>
 
 <template>
-      <div v-if="pending">
-        <LoadingPage />
-    </div>
+  <div v-if="pending">
+    <LoadingPage />
+  </div>
   <div v-else>
     <div v-if="isCurrentPostActive && currentPost">
-      
+      <Navbar />
       <div v-if="sortedBlocks.length > 0">
         <div v-for="block in sortedBlocks" :key="block.block_id">
-          <component
-            :is="blockComponents[block.block_name]"
-            v-if="blockComponents[block.block_name]"
-            :blockData="block"
-          />
+          <component :is="blockComponents[block.block_name]" v-if="blockComponents[block.block_name]"
+            :blockData="block" />
           <div v-else class="text-red-500">
             Attenzione: tipo di blocco '{{ block.block_name }}' non riconosciuto.
           </div>
         </div>
       </div>
 
-      <div v-else>
-        <p>Nessun blocco trovato per questa pagina.</p>
+          <div v-else class="flex min-h-screen items-center justify-center">
+
+      <div class="text-center">
+        <Icon name="uil:list-ul" class="text-6xl text-slate-400 dark:text-slate-500 mb-4" />
+        <p class="text-xl font-semibold text-slate-600 dark:text-slate-400">
+          This post has no blocks!
+        </p>
+        <p class="text-slate-500 dark:text-slate-300 mt-4">
+          <NuxtLink to="/">
+            <Button variant="outline">Return Home</Button>
+          </NuxtLink>
+        </p>
       </div>
+
     </div>
-    <Error v-else />
+    </div>
+    <div v-else class="flex min-h-screen items-center justify-center">
+
+      <div class="text-center">
+        <Icon name="uil:exclamation-triangle" class="text-6xl text-slate-400 dark:text-slate-500 mb-4" />
+        <p class="text-xl font-semibold text-slate-600 dark:text-slate-400">
+          This project doesn't exist!
+        </p>
+        <p class="text-slate-500 dark:text-slate-300 mt-4">
+          <NuxtLink to="/">
+            <Button variant="outline">Return Home</Button>
+          </NuxtLink>
+        </p>
+      </div>
+
+    </div>
   </div>
 </template>
