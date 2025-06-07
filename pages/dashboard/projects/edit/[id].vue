@@ -498,8 +498,8 @@ const checkDeletion = computed(() => {
         This project doesn't exist!
       </p>
       <p class="text-slate-500 dark:text-slate-300 mt-4">
-        <NuxtLink to="/">
-          <Button variant="outline">Return Home</Button>
+        <NuxtLink to="/dashboard/projects">
+          <Button variant="outline">Return back</Button>
         </NuxtLink>
       </p>
     </div>

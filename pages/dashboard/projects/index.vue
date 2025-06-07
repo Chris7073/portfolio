@@ -3,6 +3,7 @@ definePageMeta({
   layout: 'dashboard',
   middleware: 'auth-dashboard'
 })
+
 import { DialogsCreateProjectDialog } from '#components';
 import { Badge } from '@/components/ui/badge'
 
@@ -48,6 +49,33 @@ function addProjectDialog() {
       addProject(data, close)
     },
   })
+}
+
+async function shareProject(pId: number, projectTitle?: string) {
+  // Controlliamo se la Web Share API è supportata
+  if (navigator.share) {
+    const projectUrl = `${useRequestURL().host}/projects/${pId}`;
+
+    const shareData = {
+      title: projectTitle || 'Check out this project', // Usa il titolo se fornito
+      text: `I found this project and wanted to share it with you: ${projectTitle || ''}`,
+      url: projectUrl,
+    };
+
+    try {
+      await navigator.share(shareData);
+      // Feedback opzionale per l'utente, anche se la condivisione nativa è già chiara
+      showToast("Sharing dialog opened!", "success"); 
+    } catch (err) {
+      // Gestisce il caso in cui l'utente annulla la condivisione
+      if (err instanceof Error && err.name !== 'AbortError') {
+        showToast(`Error: ${err.message}`, "error");
+      }
+    }
+  } else {
+    // Fallback: se navigator.share non è disponibile, esegui la copia del link
+    copyUrl(pId);
+  }
 }
 
 async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">, close: () => any) {
@@ -101,7 +129,7 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
               {{getCategoryName(project.post_cat)}}
             </TableCell>
             <TableCell>
-              <Button variant="link" @click="copyUrl(project.post_id)" class="cursor-pointer">
+              <Button variant="link" @click="shareProject(project.post_id)" class="cursor-pointer">
                 <Icon name="uil:link" />
                 {{ `${useRequestURL().host}/projects/${project.post_id}` }}
               </Button>
