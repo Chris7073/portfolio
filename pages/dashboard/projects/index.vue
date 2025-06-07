@@ -62,7 +62,7 @@ async function shareProject(pId: number, projectTitle?: string) {
       url: projectUrl,
     };
     try {
-      await navigator.share(shareData);
+      await navigator.share({title:projectTitle,text:`Check my project ${projectTitle || ''}!`,url:projectUrl});
       // Feedback opzionale per l'utente, anche se la condivisione nativa è già chiara
       showToast("Sharing dialog opened!", "success"); 
     } catch (err) {

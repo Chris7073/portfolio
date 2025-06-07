@@ -43,7 +43,7 @@ const isCurrentPostActive = computed(() => {
   return currentPost.value.post_active === true;
 });
 
-useHead({
+useHead(() =>({
   title: currentPost.value?.post_name,
   meta: [
       { 
@@ -72,7 +72,7 @@ useHead({
         content: 'website' 
       },
     ],
-})
+}))
 </script>
 
 <template>
