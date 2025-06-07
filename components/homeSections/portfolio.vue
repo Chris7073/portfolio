@@ -75,7 +75,7 @@ const filteredPostsCatId = computed(() => {
                         <NuxtLink v-if="item.post_active" :to="'/projects/' + item.post_id"
                             class="group block h-full transform transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-xl">
                             <div class="relative h-full overflow-hidden rounded-lg text-white shadow-md"
-                                :class="item.post_image ? 'bg-auto bg-center bg-no-repeat' : getRandomBg()"
+                                :class="item.post_image ? 'bg-cover bg-center bg-no-repeat' : getRandomBg()"
                                 :style="item.post_image ? { backgroundImage: 'url(' + item.post_image + ')' } : null">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent">

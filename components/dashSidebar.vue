@@ -12,6 +12,7 @@ import {
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 }
   from "@/components/ui/sidebar"
+import UserDialog from './dialogs/userDialog.vue';
 
 const { user } = useUserSession();
 const route = useRoute()
@@ -60,7 +61,7 @@ async function logoutUser() {
 const dialog = useDialog();
 function showUserModal() {
   dialog.open({
-    body: Avatar,
+    body: UserDialog,
     title: user.value?.name,
     description: 'Here you can set-up your user'
   })
@@ -132,7 +133,7 @@ function showUserModal() {
                         <Icon name="uil:exit" class="h-4 w-4" /> 
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent class="w-[230px] p-3" align="end"> 
+                <PopoverContent class="w-[230px] p-3" align="center" side="right"> 
                     <div class="space-y-3">
                         <p class="text-sm font-medium text-center">Sei sicuro di voler uscire?</p>
                         <Button @click="logoutUser" variant="destructive" class="w-full">

@@ -111,7 +111,7 @@ async function deleteProject(id: string) {
                         <TableCell>{{ cat.cat_name }}</TableCell>
                         <TableCell>{{ getNumberPostsPerCat(cat.cat_id) }}</TableCell>
                         <TableCell class="text-right">
-                            <Popover>
+                            <Popover v-if="cat.cat_id!=='0'">
                                 <PopoverTrigger>
                                     <Button size="icon" variant="destructive" @click="console.log(cat.cat_id)">
                                         <Icon name="uil:trash" />

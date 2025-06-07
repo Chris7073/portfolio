@@ -10,7 +10,7 @@ const { isOpen, data, close } = useDialog();
         <DialogContent v-if="data" class="sm:max-w-[425px] z-[60]">
             <DialogHeader v-if="data.title || data.description">
                 <DialogTitle v-if="data.title">
-                    {{ data.title }}
+                    {{ data.title}}
                 </DialogTitle>
                 <DialogDescription v-if="data.description">
                     {{ data.description }}

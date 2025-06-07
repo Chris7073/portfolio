@@ -85,10 +85,10 @@ onUnmounted(() => {
           <Icon name="uil:user" class="text-5xl" />
           <div class="text-4xl">{{ landingInfo.hero_title }}</div>
           <div class="pb-6 opacity-80">{{ landingInfo.hero_desc }}</div>
-          <div v-if="landingInfo.hero_button[0].active">
+          <div v-if="landingInfo.hero_button[0].active" class="relative z-5">
             <NuxtLink :to="landingInfo.hero_button[0].link">
               <Button
-                class="text-xl p-8 rounded-full bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
+                class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
                   landingInfo.hero_button[0].text }}</Button>
             </NuxtLink>
           </div>
