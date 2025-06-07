@@ -50,12 +50,12 @@ useHead(() =>({
       { property: 'og:title', content: currentPost.value?.post_name },
       { property: 'og:description', content: currentPost.value?.post_desc },
       { property: 'og:type', content: 'article' }, // 'article' è più specifico di 'website' per un post/progetto
-      { property: 'og:url', content: `https://www.christiancicciarella.it/projects/${currentPost.value?.post_id}` },
+      { property: 'og:url', content: `${window.location.origin}/projects/${currentPost.value?.post_id}` },
       { property: 'og:site_name', content: 'Chris - My tiny Portfolio' }, // Nome del tuo sito
       { property: 'og:locale', content: 'it_IT' },
       
       // Immagine Open Graph
-      { property: 'og:image', content: currentPost.value?.post_image },
+      { property: 'og:image', content: `${window.location.origin}${currentPost.value?.post_image}` },
       { property: 'og:image:width', content: '1200' }, // Larghezza raccomandata
       { property: 'og:image:height', content: '630' }, // Altezza raccomandata
       { property: 'og:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
@@ -64,10 +64,12 @@ useHead(() =>({
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: currentPost.value?.post_name },
       { name: 'twitter:description', content: currentPost.value?.post_desc },
-      { name: 'twitter:image', content: currentPost.value?.post_image },
+      { name: 'twitter:image', content: `${window.location.origin}${currentPost.value?.post_image}` },
       { name: 'twitter:image:alt', content: `Immagine di anteprima per il progetto ${currentPost.value?.post_name}` },
     ],
 }))
+
+
 </script>
 
 <template>
