@@ -23,6 +23,7 @@ const currentWebsiteInfo = ref({
   name: '',
   desc: '',
   mail: '',
+  analytics: '',
   maintenance: false,
   maintenance_desc: '',
 })
@@ -32,6 +33,7 @@ const checkChanges = computed(() => {
   if (currentWebsiteInfo.value.name !== websiteInfo.value.name) return true;
   if (currentWebsiteInfo.value.desc !== websiteInfo.value.desc) return true;
   if (currentWebsiteInfo.value.mail !== websiteInfo.value.mail) return true;
+  if (currentWebsiteInfo.value.analytics !== websiteInfo.value.analytics) return true;
 
   if (currentWebsiteInfo.value.maintenance !== websiteInfo.value.maintenance) return true;
   if (currentWebsiteInfo.value.maintenance_desc !== websiteInfo.value.maintenance_desc) return true;
@@ -43,6 +45,8 @@ watch(websiteInfo, (newVal) => {
   currentWebsiteInfo.value.name = newVal.name;
   currentWebsiteInfo.value.desc = newVal.desc;
   currentWebsiteInfo.value.mail = newVal.mail;
+  currentWebsiteInfo.value.analytics = newVal.analytics;
+
 
   currentWebsiteInfo.value.maintenance = newVal.maintenance;
   currentWebsiteInfo.value.maintenance_desc = newVal.maintenance_desc;
@@ -97,7 +101,7 @@ async function updateWebSettings() {
                 {{ currentWebsiteInfo.maintenance ? 'Activated' : 'Disabled' }}
               </Label>
               <p class="text-sm text-muted-foreground">
-                This {{ currentWebsiteInfo.maintenance?'activate':'disable' }} the maintenance mode
+                This {{ currentWebsiteInfo.maintenance ? 'activate' : 'disable' }} the maintenance mode
               </p>
             </div>
           </div>
@@ -105,6 +109,11 @@ async function updateWebSettings() {
             <Label>Description</Label>
             <Textarea v-model="currentWebsiteInfo.maintenance_desc"></Textarea>
           </div>
+        </div>
+        <Separator label="Analytics" class="my-4" />
+        <div>
+          <Label for="litlyx">Litlyx project id</Label>
+          <Input id="litlyx" v-model="currentWebsiteInfo.analytics" />
         </div>
       </CardContent>
       <CardFooter>

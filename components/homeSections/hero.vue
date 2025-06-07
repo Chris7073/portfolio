@@ -1,4 +1,6 @@
 <script type="ts" setup>
+import { Lit } from "litlyx-js"
+
 const { data: landingInfo, pending } = useFetch('/api/landing-settings')
 const backgroundColor = computed(() => {
 
@@ -88,7 +90,7 @@ onUnmounted(() => {
           <div v-if="landingInfo.hero_button[0].active" class="relative z-5">
             <NuxtLink :to="landingInfo.hero_button[0].link">
               <Button
-              @click="Lit.event('Clicked Hero Button')"
+              @click="Lit.event('click-hero-button')"
                 class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
                   landingInfo.hero_button[0].text }}</Button>
             </NuxtLink>

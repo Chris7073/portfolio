@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Lit } from "litlyx-js"
 import { DialogsContatti } from '#components';
 const { data: websiteInfo } = useFetch('/api/web-settings')
 const { data: socialLinks, refresh } = useFetch('/api/social-links-settings');
@@ -26,6 +27,7 @@ function getIconName(iconId: number) {
         <div v-for="social of socialLinks">
           <NuxtLink v-if="social.active" :to="social.link" target="_blank">
             <Button 
+            @click="Lit.event(`click-${getIconName(social.icon).split(':')[1]}`)"
               size="icon"
               class="bg-transparent rounded-full text-slate-500 hover:text-blue-600 hover:bg-blue-100/50 transition-colors duration-300"
             >
