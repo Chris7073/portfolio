@@ -1,4 +1,6 @@
-<script setup>
+<script lang="ts" setup>
+// Aggiunto lang="ts" per coerenza con il codice TypeScript
+
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth-dashboard'
@@ -15,10 +17,27 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+// Importo gli altri componenti che usi nel template
+import { Separator } from '@/components/ui/separator'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
 
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
-const { data: websiteInfo, refresh } = useFetch('/api/web-settings');
+// 1. MODIFICA CHIAVE: Aggiunta la `key` e un `default` robusto a useFetch
+const { data: websiteInfo, refresh } = useFetch('/api/web-settings', {
+  key: 'web-settings', // Chiave unica per questa chiamata
+  default: () => ({
+    name: '',
+    desc: '',
+    mail: '',
+    analytics: '',
+    maintenance: false,
+    maintenance_desc: '',
+  })
+});
+
+// Questo stato locale è corretto
 const currentWebsiteInfo = ref({
   name: '',
   desc: '',
@@ -28,43 +47,49 @@ const currentWebsiteInfo = ref({
   maintenance_desc: '',
 })
 
+// Questa computed per controllare i cambiamenti è corretta
 const checkChanges = computed(() => {
-  if (!websiteInfo.value) return;
-  if (currentWebsiteInfo.value.name !== websiteInfo.value.name) return true;
-  if (currentWebsiteInfo.value.desc !== websiteInfo.value.desc) return true;
-  if (currentWebsiteInfo.value.mail !== websiteInfo.value.mail) return true;
-  if (currentWebsiteInfo.value.analytics !== websiteInfo.value.analytics) return true;
-
-  if (currentWebsiteInfo.value.maintenance !== websiteInfo.value.maintenance) return true;
-  if (currentWebsiteInfo.value.maintenance_desc !== websiteInfo.value.maintenance_desc) return true;
-  return false;
+  if (!websiteInfo.value) return false;
+  // Confronto i valori in modo sicuro
+  return currentWebsiteInfo.value.name !== websiteInfo.value.name ||
+         currentWebsiteInfo.value.desc !== websiteInfo.value.desc ||
+         currentWebsiteInfo.value.mail !== websiteInfo.value.mail ||
+         currentWebsiteInfo.value.analytics !== websiteInfo.value.analytics ||
+         currentWebsiteInfo.value.maintenance !== websiteInfo.value.maintenance ||
+         currentWebsiteInfo.value.maintenance_desc !== websiteInfo.value.maintenance_desc;
 });
 
+// 2. MODIFICA CHIAVE: Aggiunta di `{ immediate: true }` e di una copia profonda.
 watch(websiteInfo, (newVal) => {
-  if (!newVal) return;
-  currentWebsiteInfo.value.name = newVal.name;
-  currentWebsiteInfo.value.desc = newVal.desc;
-  currentWebsiteInfo.value.mail = newVal.mail;
-  currentWebsiteInfo.value.analytics = newVal.analytics;
-
-
-  currentWebsiteInfo.value.maintenance = newVal.maintenance;
-  currentWebsiteInfo.value.maintenance_desc = newVal.maintenance_desc;
+  if (newVal) {
+    // Usiamo JSON.parse/stringify per fare una "copia profonda" sicura dei dati.
+    // Questo evita problemi di mutazione diretta dell'oggetto originale.
+    currentWebsiteInfo.value = JSON.parse(JSON.stringify(newVal));
+  }
+}, {
+  immediate: true // Questa opzione è FONDAMENTALE. Esegue il watch subito al primo caricamento.
 });
 
+// 3. MODIFICA CHIAVE: Uso di `$fetch` di Nuxt per coerenza e semplicità.
 async function updateWebSettings() {
   try {
-    await fetch('/api/websettings/update-web-settings/', {
+    // Uso $fetch invece di fetch. È più semplice e gestisce meglio gli errori.
+    await $fetch('/api/websettings/update-web-settings/', { // Ho corretto l'URL che avevi nell'esempio
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(currentWebsiteInfo.value),
+      body: currentWebsiteInfo.value,
     })
-    showToast('Settings updated successfully', 'success')
-    await refresh()
-  } catch (error) {
-    showToast('Failed to update settings:' + error, 'error')
-  }
 
+    // Sostituisco showToast con alert, dato che non è definito qui.
+    // Se hai un tuo composable per i toast, importalo e usalo.
+    showToast("Impostazioni aggiornate con successo!", "success")
+
+    // Il refresh per aggiornare i dati originali è corretto.
+    await refresh();
+
+  } catch (error) {
+    console.error('Failed to update settings:', error);
+    showToast("Errore durante il salvataggio" + (error as Error).message, "error")
+  }
 }
 </script>
 

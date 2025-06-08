@@ -10,19 +10,36 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 
-const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories');
-const { data: PortfolioPostsInfo, pending } = useFetch('/api/portfolio-posts');
+// I tuoi useFetch con il default, che sono corretti
+const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories', { default: () => [] });
+const { data: PortfolioPostsInfo, pending } = useFetch('/api/portfolio-posts', { default: () => [] });
 
 function getCategoryName(catId: string) {
     const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
     return cat ? cat.cat_name : 'No category'
 }
 
+// 1. La funzione rimane la stessa, ma non la useremo direttamente nel template
 function getRandomBg() {
     const backgrounds = ['bg-blue-500', 'bg-green-500', 'bg-orange-500', 'bg-red-500', 'bg-pink-500']
     const randomIndex = Math.floor(Math.random() * backgrounds.length);
     return backgrounds[randomIndex];
 }
+
+// 2. Creiamo una mappa reattiva per memorizzare le classi casuali
+const randomBgClasses = ref<{ [key: string]: string }>({});
+
+// 3. Usiamo onMounted per popolare le classi casuali SOLO sul client
+onMounted(() => {
+    if (filteredPostsCatId.value) {
+        filteredPostsCatId.value.forEach(post => {
+            // Se un post non ha immagine, gli assegnamo una classe casuale
+            if (!post.post_image) {
+                randomBgClasses.value[post.post_id] = getRandomBg();
+            }
+        });
+    }
+});
 
 const selectedCatId = ref('0');
 const filteredPostsCatId = computed(() => {
@@ -72,11 +89,13 @@ const filteredPostsCatId = computed(() => {
                 <div v-if="filteredPostsCatId?.some(item => item.post_active)"
                     class="grid gap-6 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     <div v-for="item of filteredPostsCatId" :key="item.post_id">
-                        <NuxtLink v-if="item.post_active" :to="'/projects/' + item.post_id"
+                        <NuxtLink v-if="item.post_active" :to="`/projects/${item.post_id}`"
                             class="group block h-full transform transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-xl">
-                            <div class="relative h-full overflow-hidden rounded-lg text-white shadow-md"
-                                :class="item.post_image ? 'bg-cover bg-center bg-no-repeat' : getRandomBg()"
-                                :style="item.post_image ? { backgroundImage: 'url(' + item.post_image + ')' } : null">
+                            <div class="relative h-full overflow-hidden rounded-lg text-white shadow-md" :class="[
+                                item.post_image
+                                    ? 'bg-cover bg-center bg-no-repeat'
+                                    : randomBgClasses[item.post_id] || 'bg-gray-500' // <-- MODIFICA CHIAVE
+                            ]" :style="item.post_image ? { backgroundImage: `url('${item.post_image}')` } : null">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent">
                                 </div>

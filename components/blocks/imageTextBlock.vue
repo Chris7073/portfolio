@@ -20,7 +20,7 @@ defineProps<{
 
 <template>
     <section v-if="blockData.block_content && blockData.image_url">
-        <div class="grid grid-cols-1 lg:grid-cols-2 h-[91dvh]">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
             <div class="group relative min-h-[300px] md:min-h-[500px] lg:h-auto overflow-hidden">
                 <img class="object-cover object-center w-full h-full block transition-transform duration-300 ease-in-out"
                     :class="blockData.hover_effect ? 'group-hover:scale-105' : ''" :src="blockData.image_url"

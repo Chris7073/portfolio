@@ -1,73 +1,93 @@
-<script type="ts" setup>
+<script setup lang="ts">
+// Nota: la sintassi corretta e standard è "lang='ts'" e "setup"
 import { Lit } from "litlyx-js"
 
-const { data: landingInfo, pending } = useFetch('/api/landing-settings')
+// 1. DATA FETCHING SICURO: Aggiunto un 'default' per prevenire che 'landingInfo' sia 'null'.
+const { data: landingInfo, pending } = await useFetch('/api/landing-settings', {
+  default: () => ({
+    hero: false,
+    hero_title: 'Benvenuto',
+    hero_desc: '...',
+    hero_bg: [{
+      bg_type: 'solid',
+      bg_color_1: '#CCCCCC',
+      bg_color_2: '#FFFFFF',
+      bg_text_color: '#000000',
+      bg_image: null
+    }],
+    hero_button: [{
+      active: false,
+      text: 'Scopri di più',
+      link: '#'
+    }]
+  })
+})
+
+// 2. COMPUTED PROPERTIES SICURE: Uso l'optional chaining (?.) per accedere
+//    a proprietà annidate senza causare errori se la struttura non fosse completa.
 const backgroundColor = computed(() => {
-
-  if (!landingInfo.value) return 'background-color: #CCCCCC';
-
-  const bg = landingInfo.value.hero_bg[0];
-  if (!bg) return 'background-color: #CCCCCC';
+  const bg = landingInfo.value?.hero_bg?.[0];
+  if (!bg) return 'background-color: #CCCCCC'; // Fallback di sicurezza
 
   if (bg.bg_type === "solid") {
     return `background-color: ${bg.bg_color_1}`;
   } else {
-    return `background: ${bg.bg_type}-gradient(${bg.bg_color_1},${bg.bg_color_2});`;
-
+    // Ho corretto la sintassi del gradiente
+    return `background: ${bg.bg_type}-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2})`;
   }
-}
-);
+});
 
 const backgroundImageStyle = computed(() => {
   const imageUrl = landingInfo.value?.hero_bg?.[0]?.bg_image;
-
   if (imageUrl) {
     return {
       backgroundImage: `url(${imageUrl})`,
       backgroundRepeat: 'repeat',
       backgroundPosition: 'center',
-      backgroundSize: '80px', // Pattern con immagini piccole
-      opacity: 0.02 // Opacità al minimo, applicata SOLO a questo livello!
+      backgroundSize: '80px',
+      opacity: 0.02
     };
   }
   return {};
 });
 
-const fixedHeaderElement = ref(null);
-const maxBrightness = 1.0;
-const minBrightness = 0.4;
+// 3. LOGICA CLIENT-SIDE ISOLATA:
+//    Tutta la logica che usa 'window' e manipola il DOM deve essere eseguita
+//    solo sul client per evitare errori durante il rendering sul server.
+const fixedHeaderElement = ref<HTMLElement | null>(null);
 
-let scrollEffectRange = 200;
+if (process.client) {
+  const maxBrightness = 1.0;
+  const minBrightness = 0.4;
+  let scrollEffectRange = 200;
 
-const handleScroll = () => {
-  if (!fixedHeaderElement.value) {
-    return;
-  }
+  const handleScroll = () => {
+    if (!fixedHeaderElement.value) return;
 
-  const scrollY = window.scrollY;
-  const progress = Math.max(0, Math.min(1, scrollY / scrollEffectRange));
-  const currentBrightness = maxBrightness - (maxBrightness - minBrightness) * progress;
+    const scrollY = window.scrollY;
+    const progress = Math.max(0, Math.min(1, scrollY / scrollEffectRange));
+    const currentBrightness = maxBrightness - (maxBrightness - minBrightness) * progress;
 
-  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      if (fixedHeaderElement.value) {
+        fixedHeaderElement.value.style.filter = `brightness(${currentBrightness})`;
+      }
+    });
+  };
+
+  onMounted(() => {
     if (fixedHeaderElement.value) {
-      fixedHeaderElement.value.style.filter = `brightness(${currentBrightness})`;
+      const headerHeight = fixedHeaderElement.value.offsetHeight;
+      scrollEffectRange = headerHeight * 1.5;
     }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
   });
-};
 
-onMounted(() => {
-  if (fixedHeaderElement.value) {
-    const headerHeight = fixedHeaderElement.value.offsetHeight;
-    scrollEffectRange = headerHeight * 1.5;
-  }
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll(); // Chiama subito per applicare lo stile iniziale (utile se la pagina carica già scrollata)
-});
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+  });
+}
 </script>
 <template class="relative">
   <div ref="fixedHeaderElement" class="sticky top-0 z-1" style="transform-origin: center top;">

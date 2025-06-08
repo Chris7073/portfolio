@@ -1,9 +1,11 @@
 <script setup lang="ts">
+// Aggiungo lang="ts"
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth-dashboard'
 })
 
+// Aggiungo tutti gli import necessari per i componenti usati nel template
 import {
   Card,
   CardContent,
@@ -12,87 +14,128 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ref, watch } from 'vue'
+import { Button } from '@/components/ui/button'
+
+import { ref, watch, computed } from 'vue'
 import type { TSocialSettings } from '~/server/schema/SocialLinksSettingsSchema'
+
+// Il tuo composable per le icone, corretto
 const { icons } = useSocialIcons();
-const { data: socialLinks, refresh } = useFetch('/api/social-links-settings');
+
+// 1. MODIFICA CHIAVE: Aggiungo `key` e `default` a useFetch per renderlo robusto.
+const { data: socialLinks, refresh } = useFetch('/api/social-links-settings', {
+  key: 'social-links-settings',
+  default: () => [] as TSocialSettings[] // Definiamo il default come un array vuoto del tipo corretto
+});
+
+// Il tuo stato locale è corretto
 const currentSocialsLinks = ref<TSocialSettings[]>([]);
 
+// 2. MODIFICA CHIAVE: Aggiungo `{ immediate: true }` al watch.
 watch(socialLinks, (newVal) => {
-  if (!newVal) return;
-  currentSocialsLinks.value = JSON.parse(JSON.stringify(newVal ?? []));
+  if (newVal) {
+    // La tua copia profonda è già perfetta.
+    currentSocialsLinks.value = JSON.parse(JSON.stringify(newVal));
+  }
+}, {
+  immediate: true // FONDAMENTALE: popola il form al primo caricamento.
 });
 
+// La computed per verificare i cambiamenti è corretta
 const checkSocialChanges = computed(() => {
-  return JSON.stringify(currentSocialsLinks.value) !== JSON.stringify(socialLinks.value ?? []);
+  if (!socialLinks.value) return false;
+  return JSON.stringify(currentSocialsLinks.value) !== JSON.stringify(socialLinks.value);
 });
 
-console.log(currentSocialsLinks.value)
-const addLinkButton = computed(() => (currentSocialsLinks.value?.length ?? 0) <= 2);
+// La computed per il bottone di aggiunta è corretta
+const addLinkButton = computed(() => (currentSocialsLinks.value?.length ?? 0) < 5); // Ho messo 5 come limite, puoi cambiarlo
 
-const nextId = computed(() => {
-  const lastItem = currentSocialsLinks.value.at(-1);
-  if (!lastItem) return 0;
-  return parseInt(lastItem.id) + 1
-})
-
+// Funzione per aggiungere un nuovo link, con ID temporaneo
 function pushLinks() {
-  currentSocialsLinks.value.push({ id: (nextId.value).toString(), link: 'test', icon: 3, active: true });
+  // Uso un timestamp per un ID temporaneo univoco lato client
+  const tempId = `new-${Date.now()}`;
+  currentSocialsLinks.value.push({ id: tempId, link: '', icon: 3, active: true });
 }
 
+// Funzione per rimuovere, corretta
 function removeLink(id: string) {
   currentSocialsLinks.value = currentSocialsLinks.value.filter(link => link.id !== id);
 }
 
-
+// Funzione per il toggle, corretta
 function toggleActive(id: string) {
   const link = currentSocialsLinks.value.find(link => link.id === id);
   if (link) link.active = !link.active;
 }
 
+// 3. MODIFICA CHIAVE: Funzione di salvataggio migliorata con `$fetch` e `await refresh()`
 async function updateSocialSettings() {
   try {
-    await fetch('/api/websettings/update-social-links-settings/', {
+    await $fetch('/api/websettings/update-social-links-settings/', { // URL di esempio, adattalo al tuo
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(currentSocialsLinks.value),
+      body: currentSocialsLinks.value,
     });
-    showToast('Aggiornato con successo', 'success');
-    refresh();
-  } catch {
-    showToast('Errore durante il salvataggio', 'error');
+
+    showToast("Links salvati con successo!", "success")
+
+    // Attendi il refresh dei dati prima di considerare l'operazione conclusa
+    await refresh();
+
+  } catch (error) {
+    console.error('Errore durante il salvataggio dei link social:', error);
+    showToast("Errore durante il salvataggio" + (error as Error).message, "error")
+
   }
 }
-
 </script>
-
 <template>
   <div>
     <Card>
       <CardHeader>
         <CardTitle class="content-middle flex">
-          <Icon name="uil:setting" class="text-lg mr-2" />
-          Navbar Settings
+          <Icon name="uil:share-alt" class="text-lg mr-2" />
+          Social Links Settings
         </CardTitle>
-        <CardDescription>Here you can edit your navbar</CardDescription>
-
+        <CardDescription>Here you can edit your social links</CardDescription>
       </CardHeader>
+
       <CardContent class="grid gap-4">
-        <Accordion type="single" collapsible class="bg-gray-100 border-2 border-gray-200 rounded-lg px-4">
+        <Accordion type="single" collapsible
+          class="bg-gray-100 dark:bg-slate-800/50 border-2 border-gray-200 dark:border-slate-700 rounded-lg px-4">
           <AccordionItem value="item-1">
             <AccordionTrigger>
-              <span>
-                Social Links
-              </span>
+              <span>Social Links</span>
             </AccordionTrigger>
             <AccordionContent>
               <Card>
-                <CardContent class="p-6" v-if="currentSocialsLinks">
+                <CardContent class="p-6">
                   <div class="flex flex-col gap-4">
-                    <p v-if="currentSocialsLinks.length === 0">No navbar links, add your first</p>
-                    <div v-for="(link, index) in currentSocialsLinks" :key="index">
+                    <p v-if="currentSocialsLinks.length === 0">No social links, add your first.</p>
+
+                    <div v-for="(link, index) in currentSocialsLinks" :key="link.id">
                       <Label>Link {{ index + 1 }}</Label>
                       <div class="flex justify-between gap-2">
                         <Input :disabled="!link.active" placeholder="Your link" v-model="link.link" />
@@ -108,7 +151,6 @@ async function updateSocialSettings() {
                                 <div class="flex content-center gap-2 p-2">
                                   <Icon :name="icon.icon" class="text-xl" />{{ icon.icon }}
                                 </div>
-
                               </SelectItem>
                             </SelectGroup>
                           </SelectContent>
@@ -127,6 +169,7 @@ async function updateSocialSettings() {
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
+
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
@@ -143,11 +186,11 @@ async function updateSocialSettings() {
 
                       </div>
                     </div>
+
                     <Button :disabled="!addLinkButton" variant="outline" @click="pushLinks">
                       <Icon name="uil:plus" /> Add Link
                     </Button>
                   </div>
-
                 </CardContent>
                 <CardFooter>
                   <Button class="w-full" :disabled="!checkSocialChanges" @click="updateSocialSettings">Save Social
@@ -157,9 +200,7 @@ async function updateSocialSettings() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
       </CardContent>
-
     </Card>
   </div>
 </template>

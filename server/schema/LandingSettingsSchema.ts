@@ -19,12 +19,12 @@ export type TLandingSettings = {
     story_title: string,
     story_desc: string,
     story_img: string,
-    story_me: [{
-        me_id:number,
+    story_me: {
+        me_id: number,
         me_icon: string,
         me_title: string,
         me_desc: string
-    }]
+    }[]
 }
 
 const LandingSettingsSchema = new Schema<TLandingSettings>({
