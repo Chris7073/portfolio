@@ -17,6 +17,12 @@ export type TPortfolioPosts = {
         image_url?:string;
         altText?:string;
         didascalia?:string;
+        cards?:[{
+            c_id:number,
+            c_title:string,
+            c_desc:string,
+            c_icon:string
+        }]
     }]
 };
 
@@ -41,6 +47,13 @@ const PortfolioPostsSchema = new Schema<TPortfolioPosts>({
         image_url:{ type: String, required:false, default:'https://placehold.co/1000x1000' },
         altText:{ type: String, required: false },
         didascalia:{ type: String, required: false },
+        cards: [{
+            // Definiamo la struttura di una singola card
+            c_id: { type: Number, required: true },
+            c_title: { type: String, required: false, default: '' },
+            c_desc: { type: String, required: false, default: '' },
+            c_icon: { type: String, required: false, default: '' }
+        }]
     }]
 });
 

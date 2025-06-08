@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth-dashboard' })
-
+useHead({
+  title:'Admin Panel',
+})
 import { ref } from 'vue'
 import {
     PinInput,

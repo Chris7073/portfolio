@@ -3,7 +3,9 @@ definePageMeta({
   layout: 'dashboard',
   middleware: 'auth-dashboard'
 })
-
+useHead({
+  title:'Admin Panel',
+})
 import {
   Card,
   CardContent,

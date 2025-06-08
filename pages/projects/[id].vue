@@ -7,13 +7,17 @@ import { Lit } from "litlyx-js"
 // BLOCCHI
 const TextBlock = defineAsyncComponent(() => import('~/components/blocks/textBlock.vue'));
 const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageBlock.vue'));
-const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
+const TextImageBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
+const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/imageTextBlock.vue'));
+const TitleCardsBlock = defineAsyncComponent(() => import('~/components/blocks/titleCardsBlock.vue'));
 
 // Mappa dei componenti
 const blockComponents: Record<string, Component> = {
   'text': TextBlock,
   'image': ImageBlock,
-  'text-image': ImageTextBlock
+  'text-image': TextImageBlock,
+  'image-text': ImageTextBlock,
+  'cards':TitleCardsBlock
 };
 
 const route = useRoute();
@@ -80,7 +84,7 @@ useHead(() =>({
   </div>
   <div v-else>
     <div v-if="isCurrentPostActive && currentPost">
-      <Navbar />
+      <Navbar/>
       <div v-if="sortedBlocks.length > 0">
         <div v-for="block in sortedBlocks" :key="block.block_id">
           <component :is="blockComponents[block.block_name]" v-if="blockComponents[block.block_name]"
@@ -106,6 +110,7 @@ useHead(() =>({
       </div>
 
     </div>
+    <Footer class="mt-8"/>
     </div>
     <div v-else class="flex min-h-screen items-center justify-center">
 

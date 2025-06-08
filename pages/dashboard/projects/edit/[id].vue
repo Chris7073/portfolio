@@ -11,10 +11,6 @@ definePageMeta({
 
 // --- 1. GESTIONE CHIUSURA SCHEDA/BROWSER ---
 
-/**
- * Questa funzione viene eseguita dal browser poco prima di chiudere la scheda.
- * @param {BeforeUnloadEvent} event
- */
 const handleBeforeUnload = (event: BeforeUnloadEvent) => {
   if (!checkChanges.value) {
     return;
@@ -35,18 +31,14 @@ onUnmounted(() => {
 // --- 2. GESTIONE CAMBIO PAGINA INTERNO (NAVIGAZIONE SPA) ---
 
 onBeforeRouteLeave((to, from) => {
-  // Se non ci sono modifiche, permetti la navigazione senza chiedere nulla.
   if (!checkChanges.value) {
     return true;
   }
 
-  // Se ci sono modifiche, mostra un pop-up di conferma standard del browser.
   const answer = window.confirm(
     'Hai delle modifiche non salvate. Sei sicuro di voler lasciare la pagina? I tuoi dati andranno persi.'
   );
 
-  // Se l'utente clicca "Annulla" (answer è false), blocca la navigazione.
-  // Se l'utente clicca "OK" (answer è true), la navigazione procede.
   if (!answer) {
     return false;
   }
@@ -73,17 +65,25 @@ const currentProjectInfo = ref({
     block_name: string;
     block_title: string;
     block_content: string;
-    block_position: number; // Assicuriamoci che sia un numero
+    block_position: number;
     hover_effect: boolean;
     image_url: string;
     altText: string;
     didascalia: string;
+    cards: {
+      c_id: number;
+      c_title: string;
+      c_desc: string;
+      c_icon: string;
+    }[];
   }[]
 });
+
 
 // Stato per conservare una copia dei dati originali
 const originalProjectInfo = ref<typeof currentProjectInfo.value | null>(null);
 
+// Sostituisci il tuo blocco watch con questo
 watch(singleProject, (newProjectData) => {
   if (newProjectData) {
     const formattedData = {
@@ -93,18 +93,21 @@ watch(singleProject, (newProjectData) => {
       post_name: newProjectData.post_name,
       post_desc: newProjectData.post_desc,
       post_image: newProjectData.post_image ?? '',
-      // NUOVA LOGICA: Assicuriamoci che ogni blocco abbia una posizione numerica
-      blocks: (newProjectData.blocks ?? []).map((block, index) => ({
+      // LA CORREZIONE È QUI: aggiungiamo `: any` a `block` per dire a TypeScript
+      // di fidarsi di noi e di permetterci di accedere a qualsiasi proprietà.
+      blocks: (newProjectData.blocks ?? []).map((block: any, index) => ({
         block_id: block.block_id,
         block_name: block.block_name,
         block_title: block.block_title,
         block_content: block.block_content,
-        // Se la posizione non esiste o non è valida, usa l'indice come fallback
         block_position: typeof block.block_position === 'number' ? block.block_position : index,
         hover_effect: block.hover_effect,
         image_url: block.image_url ?? '',
         altText: block.altText ?? '',
         didascalia: block.didascalia ?? '',
+        // Ora questa riga è valida. Se `block.cards` arriva dall'API, lo usiamo.
+        // Altrimenti, `?? []` crea un array vuoto, garantendo che `cards` esista sempre.
+        cards: block.cards ?? []
       }))
     };
 
@@ -115,39 +118,26 @@ watch(singleProject, (newProjectData) => {
   immediate: true
 });
 
-/**
- * NUOVO: Computed property per visualizzare i blocchi sempre ordinati.
- * Usiamo questa nel template per il v-for.
- */
+
 const sortedBlocks = computed(() => {
-  // .slice() crea una copia per non mutare l'array originale con sort()
   return currentProjectInfo.value.blocks.slice().sort((a, b) => a.block_position - b.block_position);
 });
 
-/**
- * NUOVO: Funzione per spostare un blocco su o giù.
- * @param blockId L'ID del blocco da spostare.
- * @param direction La direzione dello spostamento (-1 per su, 1 per giù).
- */
+
 function moveBlock(blockId: number, direction: -1 | 1) {
   const blocks = currentProjectInfo.value.blocks;
   const currentIndex = sortedBlocks.value.findIndex(b => b.block_id === blockId);
 
-  // Controlla se il blocco esiste e se il movimento è possibile
   if (currentIndex === -1 || (currentIndex === 0 && direction === -1) || (currentIndex === sortedBlocks.value.length - 1 && direction === 1)) {
     return;
   }
 
-  // Trova il blocco con cui scambiare la posizione
   const blockToSwapWith = sortedBlocks.value[currentIndex + direction];
-
-  // Trova i blocchi originali nell'array non ordinato
   const currentBlockInOriginalArray = blocks.find(b => b.block_id === blockId);
   const blockToSwapInOriginalArray = blocks.find(b => b.block_id === blockToSwapWith.block_id);
 
   if (!currentBlockInOriginalArray || !blockToSwapInOriginalArray) return;
 
-  // Scambia le loro proprietà 'block_position'
   const tempPosition = currentBlockInOriginalArray.block_position;
   currentBlockInOriginalArray.block_position = blockToSwapInOriginalArray.block_position;
   blockToSwapInOriginalArray.block_position = tempPosition;
@@ -186,19 +176,23 @@ function addBlock() {
     return;
   }
 
-  const newBlockId = Date.now();
-
   const newBlock = {
-    block_id: newBlockId,
+    block_id: Date.now(),
     block_name: selectBlockToAdd.value,
     block_title: `Nuovo Blocco - ${selectBlockToAdd.value}`,
     block_content: '',
-    // MODIFICATO: Assegna la posizione successiva disponibile
-    block_position: currentProjectInfo.value.blocks.length,
+    block_position: currentProjectInfo.value.blocks.length+1,
     hover_effect: false,
     image_url: '',
     altText: '',
-    didascalia: ''
+    didascalia: '',
+    // Se il blocco è di tipo 'cards', lo inizializziamo con una card di esempio
+    cards: selectBlockToAdd.value === 'cards' ? [{
+      c_id: Date.now() + 1,
+      c_title: 'Skill Iniziale',
+      c_desc: '',
+      c_icon: 'plus',
+    }] : [] // Altrimenti, l'array delle cards è vuoto
   };
 
   currentProjectInfo.value.blocks.push(newBlock);
@@ -208,6 +202,39 @@ function addBlock() {
 function removeBlock(id: number) {
   currentProjectInfo.value.blocks = currentProjectInfo.value.blocks.filter(block => block.block_id !== id);
 }
+
+// --- MODIFICA 1: Funzioni `addCard` e `removeCard` corrette ---
+// Ora accettano l'ID del blocco per sapere dove operare.
+
+/**
+ * Aggiunge una nuova card a un blocco specifico.
+ * @param {number} blockId L'ID del blocco a cui aggiungere la card.
+ */
+const addCard = (blockId: number) => {
+  const targetBlock = currentProjectInfo.value.blocks.find(b => b.block_id === blockId);
+  if (targetBlock) {
+    targetBlock.cards.push({
+      c_id: Date.now(), // ID Unico
+      c_title: 'Nuova Card Senza Nome',
+      c_desc: 'Descrizione della card da modificare',
+      c_icon: 'plus'
+    });
+  }
+};
+
+/**
+ * Rimuove una card specifica da un blocco specifico.
+ * @param {number} blockId L'ID del blocco da cui rimuovere la card.
+ * @param {number} cardId L'ID della card da rimuovere.
+ */
+const removeCard = (blockId: number, cardId: number) => {
+  const targetBlock = currentProjectInfo.value.blocks.find(b => b.block_id === blockId);
+  if (targetBlock) {
+    targetBlock.cards = targetBlock.cards.filter(
+      card => card.c_id !== cardId
+    );
+  }
+};
 
 async function saveProject() {
   try {
@@ -247,11 +274,6 @@ const checkDeletion = computed(() => {
 </script>
 
 <template>
-  <div v-if="pending">
-    <LoadingPage />
-  </div>
-  <div v-else>
-  <div v-if="singleProject">
     <header class="bg-slate-200 border-b p-4 flex items-center justify-between gap-4 sticky top-0 z-10">
       <div class="flex items-center gap-3 flex-grow min-w-0">
         <Button variant="outline" size="icon" @click="navigateTo('/dashboard/projects/')">
@@ -377,6 +399,12 @@ const checkDeletion = computed(() => {
                   <SelectItem value="text-image">
                     <Icon name="memory:text-image" /> Text and Image Block
                   </SelectItem>
+                  <SelectItem value="image-text">
+                    <Icon name="memory:text-image" /> Image and Text Block
+                  </SelectItem>
+                  <SelectItem value="cards">
+                    <Icon name="memory:card-text" /> Cards Block
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -387,7 +415,7 @@ const checkDeletion = computed(() => {
           <div v-if="sortedBlocks.length > 0">
             <div v-for="(block, index) in sortedBlocks" :key="block.block_id">
               <Accordion type="single" collapsible class="bg-slate-200 rounded-xl px-4 my-2">
-                <AccordionItem value="item-1" class="border-b-0">
+                <AccordionItem :value="`block-${block.block_id}`" class="border-b-0">
 
                   <div class="flex items-center justify-between w-full">
                     <AccordionTrigger class="capitalize flex-grow">{{ block.block_name }} Block</AccordionTrigger>
@@ -425,7 +453,8 @@ const checkDeletion = computed(() => {
                   </div>
 
                   <AccordionContent class="bg-slate-50 rounded-md p-4 mb-4">
-                    <div v-if="['text', 'text-image'].includes(block.block_name)" class="flex flex-col gap-4">
+                    <div v-if="['text', 'text-image', 'image-text', 'cards'].includes(block.block_name)"
+                      class="flex flex-col gap-4">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Text Settings</h3>
                       </div>
@@ -439,7 +468,8 @@ const checkDeletion = computed(() => {
                       </div>
                     </div>
 
-                    <div v-if="['image', 'text-image'].includes(block.block_name)" class="flex flex-col gap-4 mt-6">
+                    <div v-if="['image', 'text-image', 'image-text'].includes(block.block_name)"
+                      class="flex flex-col gap-4 mt-6">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Image Settings</h3>
                       </div>
@@ -452,9 +482,9 @@ const checkDeletion = computed(() => {
                       <div>
                         <Label>Hover Effect</Label>
                         <div class="flex items-center gap-3 mt-1">
-                          <Checkbox :id="'terms' + block.block_id" v-model="block.hover_effect" />
+                          <Checkbox :id="'hover-' + block.block_id" v-model="block.hover_effect" />
                           <div class="grid gap-1.5 leading-none">
-                            <label :for="'terms' + block.block_id"
+                            <label :for="'hover-' + block.block_id"
                               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                               {{ block.hover_effect ? 'Activated' : 'Disabled' }}
                             </label>
@@ -476,6 +506,58 @@ const checkDeletion = computed(() => {
                       </div>
                     </div>
 
+                    <div v-if="block.block_name === 'cards'" class="flex flex-col gap-4">
+                      <div class="border-b dark:border-slate-700 pb-4 mb-4 mt-6">
+                        <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Cards Settings</h3>
+                      </div>
+                      <div class="flex justify-between">
+                        <p>{{ block.cards.length }} Cards</p>
+                        <div class="flex gap-2">
+                          <Button @click="addCard(block.block_id)">
+                            Add Card
+                          </Button>
+                          <NuxtLink to="https://icones.js.org/collection/uil" target="_blank">
+                            <Button variant="outline" size="icon">
+                              <Icon name="uil:icons" />
+                            </Button>
+                          </NuxtLink>
+                        </div>
+                      </div>
+
+                      <Accordion type="multiple" collapsible class="bg-gray-100 rounded-md">
+                        <AccordionItem v-for="(card, cardIndex) in block.cards" :key="card.c_id"
+                          :value="`card-item-${card.c_id}`" class="px-4">
+                          <AccordionTrigger>card {{ cardIndex + 1 }}</AccordionTrigger>
+                          <AccordionContent class="flex gap-2 flex-col">
+                            <div>
+                              <Label>Icon</Label>
+                              <div class="flex flex-row items-center">
+                                <Icon class="text-4xl mr-2" :name="card.c_icon || 'uil:ban'" />
+                                <Input class="bg-white" v-model="card.c_icon" />
+                              </div>
+                            </div>
+                            <div>
+                              <Label>Title</Label>
+                              <Input class="bg-white" v-model="card.c_title" />
+                            </div>
+                            <div>
+                              <Label>Description</Label>
+                              <Input class="bg-white" v-model="card.c_desc" />
+                            </div>
+                            <Popover>
+                              <PopoverTrigger>
+                                <Button class="w-full" variant="destructive">Remove Skill</Button>
+                              </PopoverTrigger>
+                              <PopoverContent class="flex flex-col gap-2">
+                                <Label>Are you sure?</Label>
+                                <Button @click="removeCard(block.block_id, card.c_id)">Confirm</Button>
+                              </PopoverContent>
+                            </Popover>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+
 
                   </AccordionContent>
                 </AccordionItem>
@@ -489,21 +571,4 @@ const checkDeletion = computed(() => {
         </CardContent>
       </Card>
     </div>
-  </div>
-  <div v-else class="flex min-h-screen items-center justify-center">
-
-    <div class="text-center">
-      <Icon name="uil:exclamation-triangle" class="text-6xl text-slate-400 dark:text-slate-500 mb-4" />
-      <p class="text-xl font-semibold text-slate-600 dark:text-slate-400">
-        This project doesn't exist!
-      </p>
-      <p class="text-slate-500 dark:text-slate-300 mt-4">
-        <NuxtLink to="/dashboard/projects">
-          <Button variant="outline">Return back</Button>
-        </NuxtLink>
-      </p>
-    </div>
-
-  </div>
-  </div>
 </template>
