@@ -20,7 +20,7 @@ defineProps<{
 
 <template>
     <section v-if="blockData.block_content && blockData.image_url">
-        <div class="grid grid-cols-1 lg:grid-cols-2 ">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
             <div class="bg-slate-50 dark:bg-slate-900 py-20 sm:py-28 lg:py-32 px-6 sm:px-8 flex items-center">
                 <div class="max-w-3xl mx-auto">
                     <h1 v-if="blockData.block_title"

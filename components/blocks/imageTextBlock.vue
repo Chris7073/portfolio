@@ -29,14 +29,12 @@ defineProps<{
                     class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
                     aria-hidden="true">
                 </div>
-<div
-  v-if="blockData.didascalia && blockData.hover_effect"
-  class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out"
->
-  <p class="text-white bg-black/60 text-sm md:text-base text-center px-4 py-2 rounded-md">
-    {{ blockData.didascalia }}
-  </p>
-</div>
+                <div v-if="blockData.didascalia && blockData.hover_effect"
+                    class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+                    <p class="text-white bg-black/60 text-sm md:text-base text-center px-4 py-2 rounded-md">
+                        {{ blockData.didascalia }}
+                    </p>
+                </div>
             </div>
             <div class="bg-slate-50 dark:bg-slate-900 py-20 sm:py-28 lg:py-32 px-6 sm:px-8 flex items-center">
                 <div class="max-w-3xl mx-auto">

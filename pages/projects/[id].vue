@@ -110,7 +110,6 @@ useHead(() =>({
       </div>
 
     </div>
-    <Footer class="mt-8"/>
     </div>
     <div v-else class="flex min-h-screen items-center justify-center">
 

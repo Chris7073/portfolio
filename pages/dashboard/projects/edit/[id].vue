@@ -435,7 +435,7 @@ const checkDeletion = computed(() => {
                   </div>
                   <AccordionContent class="bg-slate-50 dark:bg-slate-800 rounded-md p-4 mb-4">
                     
-                    <div v-if="['text', 'text-image', 'image-text', 'cards'].includes(block.block_name)" class="flex flex-col gap-4">
+                    <div v-if="['text', 'image','text-image', 'image-text', 'cards'].includes(block.block_name)" class="flex flex-col gap-4">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Text Settings</h3>
                       </div>
