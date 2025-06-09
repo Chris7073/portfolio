@@ -98,32 +98,34 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
 </script>
 <template>
   <Card>
-    <CardHeader class="flex flex-row justify-between">
+    <CardHeader class="flex flex-row justify-between items-start">
       <div>
-        <CardTitle class="content-middle flex">
+        <CardTitle class="content-middle flex dark:text-slate-100">
           <Icon name="uil:archive" class="text-lg mr-2" />
           Projects
         </CardTitle>
-        <CardDescription>Here you can see all your projects</CardDescription>
+        <CardDescription class="dark:text-slate-400">Here you can see all your projects</CardDescription>
       </div>
-      <Button class="bg-blue-500 hover:bg-blue-500/90" @click="addProjectDialog">Add Project</Button>
+      <Button class="bg-blue-500 hover:bg-blue-500/90 dark:bg-sky-600 dark:hover:bg-sky-500"
+        @click="addProjectDialog">Add Project</Button>
     </CardHeader>
     <CardContent class="flex flex-col gap-4">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Project Name</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Shareable Url</TableHead>
-            <TableHead>State</TableHead>
+          <TableRow class="dark:border-b-slate-800">
+            <TableHead class="dark:text-slate-300">Project Name</TableHead>
+            <TableHead class="dark:text-slate-300">Category</TableHead>
+            <TableHead class="dark:text-slate-300">Shareable Url</TableHead>
+            <TableHead class="dark:text-slate-300">State</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="project in portfolioProjects"
-            :class="!project.post_active ? 'bg-red-100 hover:bg-red-200/80' : 'bg-white'">
-            <TableCell class="overflow-clip max-w-[10rem]">
-              <Button variant="link" @click="navigateTo(`/dashboard/projects/edit/${project.post_id}`)"
-                class="cursor-pointer">
+          <TableRow v-for="project in portfolioProjects" :key="project.post_id" :class="!project.post_active
+            ? 'bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:text-slate-300  dark:hover:bg-red-950'
+            : 'hover:bg-gray-100 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'">
+            <TableCell class="overflow-hidden max-w-[10rem]"> <Button variant="link"
+                @click="navigateTo(`/dashboard/projects/edit/${project.post_id}`)"
+                class="cursor-pointer truncate text-slate-700 dark:text-slate-300 p-0">
                 <Icon name="uil:edit" />
                 {{ project.post_name }}
               </Button>
@@ -131,18 +133,21 @@ async function addProject(data: Pick<TPortfolioPosts, "post_name" | "post_desc">
             <TableCell>
               {{ getCategoryName(project.post_cat) }}
             </TableCell>
-            <TableCell>
-              <Button variant="link" @click="shareProject(project.post_id, project.post_name)" class="cursor-pointer">
+            <TableCell class="overflow-hidden max-w-xs"> <Button variant="link"
+                @click="shareProject(project.post_id, project.post_name)"
+                class="cursor-pointer text-slate-700 dark:text-slate-300 p-0 truncate">
                 <Icon name="uil:link" />
-                {{ `${useRequestURL().host}/projects/${project.post_id}` }}
+                /projects/{{ project.post_id }}
               </Button>
             </TableCell>
-            <TableCell class="w-[1rem]">
-              <Badge variant="outline" class="w-full flex justify-center text-white py-2"
-                :class="project.post_active ? 'bg-green-400' : 'bg-red-400'">
+            <TableCell class="w-24 text-center">
+              <Badge :class="project.post_active
+                ? 'bg-green-200 text-green-800 dark:bg-green-900/70 dark:text-green-200'
+                : 'bg-red-200 text-red-800 dark:bg-red-900/80 dark:text-red-200'"
+                class="py-1 w-full flex justify-center" variant="outline">
+                {{ project.post_active ? 'Active' : 'Hidden' }}
               </Badge>
             </TableCell>
-
           </TableRow>
         </TableBody>
       </Table>

@@ -95,63 +95,67 @@ const visitCount = computed(() => {
 </script>
 
 <template>
-  <Card class="w-full">
+  <Card class="w-full dark:bg-slate-900 dark:border-slate-800">
     <CardHeader class="pb-4">
-      <CardTitle>
+      <CardTitle class="dark:text-slate-100">
         <Icon name="uil:apps" /> Dashboard
       </CardTitle>
-      <CardDescription>Overview of your recent activities and key statistics.</CardDescription>
+      <CardDescription class="dark:text-slate-400">Overview of your recent activities and key statistics.</CardDescription>
     </CardHeader>
     <CardContent class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-      <Card>
+      <Card class="dark:bg-slate-950 dark:border-slate-800">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle class="text-sm font-medium">
             <NuxtLink to="/dashboard/projects">
-              <Button variant="link" class="p-0">Projects</Button>
+              <Button variant="link" class="p-0 dark:text-slate-50">Projects</Button>
             </NuxtLink>
           </CardTitle>
           <Icon name="uil:file-check-alt" class="text-2xl text-green-500" />
         </CardHeader>
         <CardContent>
-          <div class="text-4xl font-bold">{{ activeProjects.length }}</div>
-          <p class="text-xs text-muted-foreground">
+          <div class="text-4xl font-bold dark:text-slate-50">{{ activeProjects.length }}</div>
+          <p class="text-xs text-muted-foreground dark:text-slate-400">
             {{ disabledProjects.length }} Unpublished
           </p>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card class="dark:bg-slate-950 dark:border-slate-800">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle class="text-sm font-medium">
             <NuxtLink to="/dashboard/projects/categories">
-              <Button variant="link" class="p-0">Categories</Button>
+              <Button variant="link" class="p-0 dark:text-slate-50">Categories</Button>
             </NuxtLink>
           </CardTitle>
           <Icon name="uil:list-ul" class="text-2xl text-orange-500" />
         </CardHeader>
         <CardContent>
-          <div class="text-4xl font-bold">{{ portfolioCategories.length }}</div>
-          <p class="text-xs text-muted-foreground">
+          <div class="text-4xl font-bold dark:text-slate-50">{{ portfolioCategories.length }}</div>
+          <p class="text-xs text-muted-foreground dark:text-slate-400">
             {{ emptyCategories.length }} Not used
           </p>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card class="dark:bg-slate-950 dark:border-slate-800">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle class="text-sm font-medium">
+          <CardTitle class="text-sm font-medium dark:text-slate-400">
             Portfolio Visits
           </CardTitle>
-
+          
           <Select v-model="selectedPeriod">
-            <SelectTrigger class="w-[180px]">
+            <SelectTrigger class="w-[180px] bg-slate-100 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300">
               <Icon name="uil:graph-bar" class="text-violet-500" /> 
               <SelectValue placeholder="Seleziona periodo" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent class="dark:bg-slate-950 dark:border-slate-800">
               <SelectGroup>
-                <SelectItem v-for="period in periods" :key="period.key" :value="period.key">
+                <SelectItem 
+                  v-for="period in periods" 
+                  :key="period.key" 
+                  :value="period.key" 
+                  class="dark:text-slate-200 dark:focus:bg-slate-800">
                   {{ period.label }}
                 </SelectItem>
               </SelectGroup>
@@ -159,10 +163,10 @@ const visitCount = computed(() => {
           </Select>
         </CardHeader>
         <CardContent>
-          <div class="text-4xl font-bold">{{ visitCount }}</div>
-          <p class="text-xs text-muted-foreground">
-Total visits on selected period          
-</p>
+          <div class="text-4xl font-bold dark:text-slate-50">{{ visitCount }}</div>
+          <p class="text-xs text-muted-foreground dark:text-slate-400">
+            Total visits on selected period
+          </p>
         </CardContent>
       </Card>
 

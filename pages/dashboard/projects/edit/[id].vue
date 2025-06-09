@@ -274,24 +274,25 @@ const checkDeletion = computed(() => {
 </script>
 
 <template>
-    <header class="bg-slate-200 border-b p-4 flex items-center justify-between gap-4 sticky top-0 z-10">
+  <div>
+    <header class="bg-slate-200 dark:bg-slate-900 border-b dark:border-b-slate-800 p-4 flex items-center justify-between gap-4 sticky top-0 z-10">
       <div class="flex items-center gap-3 flex-grow min-w-0">
-        <Button variant="outline" size="icon" @click="navigateTo('/dashboard/projects/')">
+        <Button variant="outline" size="icon" @click="navigateTo('/dashboard/projects/')" class="dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700">
           <Icon name="material-symbols:arrow-back-ios-new-rounded" class="text-lg" />
         </Button>
 
-        <Separator orientation="vertical" class="h-8" />
+        <Separator orientation="vertical" class="h-8 dark:bg-slate-700" />
 
         <Input v-model="currentProjectInfo.post_name" placeholder="Nome del Progetto"
-          class="bg-transparent border-none text-2xl font-semibold p-0 h-auto focus-visible:ring-0 truncate" />
+          class="bg-transparent border-none text-2xl font-semibold p-0 h-auto focus-visible:ring-0 truncate dark:text-slate-50" />
       </div>
 
       <div class="flex items-center gap-2 flex-shrink-0">
         <Select v-model="postStatus">
-          <SelectTrigger class="w-[150px] bg-white">
+          <SelectTrigger class="w-[150px] bg-white dark:bg-slate-900 dark:border-slate-700">
             <SelectValue placeholder="Seleziona stato" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent class="dark:bg-slate-950 dark:border-slate-800">
             <SelectGroup>
               <SelectItem value="true">
                 <div class="flex items-center gap-2">
@@ -309,17 +310,15 @@ const checkDeletion = computed(() => {
           </SelectContent>
         </Select>
 
-        <Button class="bg-slate-700 hover:bg-slate-600" :disabled="!checkChanges || pending" @click="saveProject">
-          <div v-if="pending">
+        <Button class="bg-slate-800 hover:bg-slate-700 dark:bg-sky-600 dark:hover:bg-sky-500" :disabled="!checkChanges || pending" @click="saveProject">
+          <div v-if="pending" class="flex items-center">
             <Icon name="ri:loader-fill" class="mr-2 animate-spin" />
             Saving...
           </div>
-
-          <div v-else>
+          <div v-else class="flex items-center">
             <Icon name="material-symbols:save-outline-rounded" class="mr-2" />
             Salva
           </div>
-
         </Button>
 
         <Popover>
@@ -328,180 +327,156 @@ const checkDeletion = computed(() => {
               <Icon name="material-symbols:delete-outline-rounded" class="text-lg" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="end" side="top" class="w-80">
+          <PopoverContent align="end" side="top" class="w-80 dark:bg-slate-950 dark:border-slate-800">
             <div class="flex flex-col gap-2">
-              <Label class="font-bold">Sei assolutamente sicuro?</Label>
-              <p class="text-sm">
+              <Label class="font-bold dark:text-slate-100">Sei assolutamente sicuro?</Label>
+              <p class="text-sm dark:text-slate-400">
                 Questa azione non può essere annullata. Per confermare la cancellazione, digita
-                <strong class="text-red-600">Delete/{{ currentProjectInfo.post_name }}</strong>
+                <strong class="text-red-600 dark:text-red-500">Delete/{{ currentProjectInfo.post_name }}</strong>
                 nel campo qui sotto.
               </p>
-              <Input v-model="deletionInput" placeholder="Delete/..." />
+              <Input v-model="deletionInput" placeholder="Delete/..." class="dark:bg-slate-900 dark:border-slate-700" />
               <div class="flex justify-end gap-2 mt-2">
                 <PopoverClose as-child>
-                  <Button variant="secondary">Annulla</Button>
+                  <Button variant="secondary" class="dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">Annulla</Button>
                 </PopoverClose>
-                <Button :disabled="!checkDeletion" @click="deleteProject">Conferma Cancellazione</Button>
+                <Button :disabled="!checkDeletion" @click="deleteProject" variant="destructive">Conferma Cancellazione</Button>
               </div>
             </div>
           </PopoverContent>
         </Popover>
       </div>
     </header>
-    <div class="bg-slate-50 p-2">
-      <Card class="m-4">
+
+    <div class="bg-slate-50 dark:bg-slate-950 p-2">
+      <Card class="m-4 dark:bg-slate-900 dark:border-slate-800">
         <CardHeader>
-          <CardTitle class="content-middle flex">
+          <CardTitle class="content-middle flex dark:text-slate-100">
             <Icon name="gg:website" class="text-lg mr-2" />
             Project info
           </CardTitle>
-          <CardDescription>Here you can edit your description and background image
-          </CardDescription>
+          <CardDescription class="dark:text-slate-400">Here you can edit your description and background image</CardDescription>
         </CardHeader>
         <CardContent class="grid gap-4 grid-cols-1 lg:grid-cols-2">
           <div>
-            <Label>Project Description</Label>
-            <Textarea v-model="currentProjectInfo.post_desc" />
+            <Label class="dark:text-slate-200">Project Description</Label>
+            <Textarea v-model="currentProjectInfo.post_desc" class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
           </div>
           <div>
-            <Label>Background Image</Label>
-            <Input v-model="currentProjectInfo.post_image" />
+            <Label class="dark:text-slate-200">Background Image</Label>
+            <Input v-model="currentProjectInfo.post_image" class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
             <img v-if="currentProjectInfo.post_image" :src="currentProjectInfo.post_image"
               class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
           </div>
         </CardContent>
       </Card>
-      <Card class="m-4">
+      
+      <Card class="m-4 dark:bg-slate-900 dark:border-slate-800">
         <CardHeader>
-          <CardTitle class="content-middle flex">
+          <CardTitle class="content-middle flex dark:text-slate-100">
             <Icon name="uil:web-section" class="text-lg mr-2" />
             Blocks
           </CardTitle>
-          <CardDescription>Here you can edit your blocks for project: <strong>{{ currentProjectInfo.post_name
-              }}</strong>
+          <CardDescription class="dark:text-slate-400">Here you can edit your blocks for project: <strong class="dark:text-slate-300">{{ currentProjectInfo.post_name }}</strong>
           </CardDescription>
         </CardHeader>
         <CardContent class="grid gap-4">
           <div class="flex justify-between gap-4">
             <Select v-model="selectBlockToAdd">
-              <SelectTrigger>
+              <SelectTrigger class="dark:bg-slate-800 dark:border-slate-700">
                 <SelectValue placeholder="Select a block" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent class="dark:bg-slate-950 dark:border-slate-700">
                 <SelectGroup>
                   <SelectLabel>Blocks types</SelectLabel>
-                  <SelectItem value="text">
-                    <Icon name="memory:text-box" /> Text Block
-                  </SelectItem>
-                  <SelectItem value="image">
-                    <Icon name="memory:image" /> Image Block
-                  </SelectItem>
-                  <SelectItem value="text-image">
-                    <Icon name="memory:text-image" /> Text and Image Block
-                  </SelectItem>
-                  <SelectItem value="image-text">
-                    <Icon name="memory:text-image" /> Image and Text Block
-                  </SelectItem>
-                  <SelectItem value="cards">
-                    <Icon name="memory:card-text" /> Cards Block
-                  </SelectItem>
+                  <SelectItem value="text"><Icon name="memory:text-box" /> Text Block</SelectItem>
+                  <SelectItem value="image"><Icon name="memory:image" /> Image Block</SelectItem>
+                  <SelectItem value="text-image"><Icon name="memory:text-image" /> Text and Image Block</SelectItem>
+                  <SelectItem value="image-text"><Icon name="memory:text-image" /> Image and Text Block</SelectItem>
+                  <SelectItem value="cards"><Icon name="memory:card-text" /> Cards Block</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
             <Button :disabled="!checkBlockToAdd" @click="addBlock">Add Block</Button>
           </div>
           <Separator label="Edit Blocks" />
-
+          
           <div v-if="sortedBlocks.length > 0">
             <div v-for="(block, index) in sortedBlocks" :key="block.block_id">
-              <Accordion type="single" collapsible class="bg-slate-200 rounded-xl px-4 my-2">
+              <Accordion type="single" collapsible class="bg-slate-200 dark:bg-slate-800/50 dark:border dark:border-slate-700 rounded-xl px-4 my-2">
                 <AccordionItem :value="`block-${block.block_id}`" class="border-b-0">
-
                   <div class="flex items-center justify-between w-full">
-                    <AccordionTrigger class="capitalize flex-grow">{{ block.block_name }} Block</AccordionTrigger>
-
+                    <AccordionTrigger class="capitalize flex-grow dark:text-slate-200">{{ block.block_name }} Block</AccordionTrigger>
                     <div class="flex gap-1 ml-4 flex-shrink-0">
-                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, -1)" :disabled="index === 0"
-                        class="disabled:opacity-25">
+                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, -1)" :disabled="index === 0" class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
                         <Icon name="material-symbols:arrow-upward-alt-rounded" />
                       </Button>
-                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, 1)"
-                        :disabled="index === sortedBlocks.length - 1" class="disabled:opacity-25">
+                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, 1)" :disabled="index === sortedBlocks.length - 1" class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
                         <Icon name="material-symbols:arrow-downward-alt-rounded" />
                       </Button>
-
                       <Popover>
-                        <PopoverTrigger>
-                          <Button variant="outline" size="icon"
-                            class="bg-red-400 hover:bg-red-500/80 text-white hover:text-white">
+                        <PopoverTrigger as-child>
+                          <Button variant="outline" size="icon" class="bg-red-400 hover:bg-red-500/80 text-white hover:text-white">
                             <Icon name="material-symbols:delete-outline-rounded" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent align="center" side="left" class="flex flex-col gap-2">
-                          <Label>Are you sure?</Label>
-                          <p>You are going to delete <strong>block #{{ block.block_name }}</strong></p>
+                        <PopoverContent align="center" side="left" class="flex flex-col gap-2 dark:bg-slate-950 dark:border-slate-800">
+                          <Label class="dark:text-slate-200">Are you sure?</Label>
+                          <p class="dark:text-slate-400">You are going to delete <strong>block #{{ block.block_name }}</strong></p>
                           <div class="flex justify-between gap-2 mt-2">
-
                             <PopoverClose as-child>
-                              <Button variant="secondary">Undo</Button>
+                              <Button variant="secondary" class="dark:bg-slate-800 dark:hover:bg-slate-700">Undo</Button>
                             </PopoverClose>
-                            <Button @click="removeBlock(block.block_id)">Confirm</Button>
+                            <Button @click="removeBlock(block.block_id)" variant="destructive">Confirm</Button>
                           </div>
                         </PopoverContent>
                       </Popover>
                     </div>
                   </div>
-
-                  <AccordionContent class="bg-slate-50 rounded-md p-4 mb-4">
-                    <div v-if="['text', 'text-image', 'image-text', 'cards'].includes(block.block_name)"
-                      class="flex flex-col gap-4">
+                  <AccordionContent class="bg-slate-50 dark:bg-slate-800 rounded-md p-4 mb-4">
+                    
+                    <div v-if="['text', 'text-image', 'image-text', 'cards'].includes(block.block_name)" class="flex flex-col gap-4">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Text Settings</h3>
                       </div>
                       <div>
-                        <Label>Title</Label>
-                        <Input class="bg-white" v-model="block.block_title" />
+                        <Label class="dark:text-slate-300">Title</Label>
+                        <Input class="bg-white dark:bg-slate-700" v-model="block.block_title" />
                       </div>
                       <div>
-                        <Label>Description</Label>
-                        <Textarea class="bg-white" v-model="block.block_content" />
+                        <Label class="dark:text-slate-300">Description</Label>
+                        <Textarea class="bg-white dark:bg-slate-700" v-model="block.block_content" />
                       </div>
                     </div>
 
-                    <div v-if="['image', 'text-image', 'image-text'].includes(block.block_name)"
-                      class="flex flex-col gap-4 mt-6">
+                    <div v-if="['image', 'text-image', 'image-text'].includes(block.block_name)" class="flex flex-col gap-4 mt-6">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Image Settings</h3>
                       </div>
                       <div>
-                        <Label>Image Url</Label>
-                        <Input class="bg-white" v-model="block.image_url" />
-                        <img v-if="block.image_url" :src="block.image_url"
-                          class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
+                        <Label class="dark:text-slate-300">Image Url</Label>
+                        <Input class="bg-white dark:bg-slate-700" v-model="block.image_url" />
+                        <img v-if="block.image_url" :src="block.image_url" class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
                       </div>
-                      <div>
-                        <Label>Hover Effect</Label>
-                        <div class="flex items-center gap-3 mt-1">
-                          <Checkbox :id="'hover-' + block.block_id" v-model="block.hover_effect" />
-                          <div class="grid gap-1.5 leading-none">
-                            <label :for="'hover-' + block.block_id"
-                              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                              {{ block.hover_effect ? 'Activated' : 'Disabled' }}
-                            </label>
-                            <p class="text-sm text-muted-foreground">
-                              This {{ block.hover_effect ? 'activates' : 'disables' }} the hover effect.
-                            </p>
-                          </div>
+                      <div class="flex items-center gap-3 mt-1">
+                        <Checkbox :id="'hover-' + block.block_id" v-model="block.hover_effect" />
+                        <div class="grid gap-1.5 leading-none">
+                          <label :for="'hover-' + block.block_id" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-slate-300">
+                            {{ block.hover_effect ? 'Activated' : 'Disabled' }}
+                          </label>
+                          <p class="text-sm text-muted-foreground dark:text-slate-500">
+                            This {{ block.hover_effect ? 'activates' : 'disables' }} the hover effect.
+                          </p>
                         </div>
                       </div>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label>Alt Text</Label>
-                          <Input class="bg-white" v-model="block.altText" />
+                          <Label class="dark:text-slate-300">Alt Text</Label>
+                          <Input class="bg-white dark:bg-slate-700" v-model="block.altText" />
                         </div>
                         <div>
-                          <Label>Didascalia (Caption)</Label>
-                          <Input class="bg-white" v-model="block.didascalia" />
+                          <Label class="dark:text-slate-300">Didascalia (Caption)</Label>
+                          <Input class="bg-white dark:bg-slate-700" v-model="block.didascalia" />
                         </div>
                       </div>
                     </div>
@@ -511,45 +486,38 @@ const checkDeletion = computed(() => {
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Cards Settings</h3>
                       </div>
                       <div class="flex justify-between">
-                        <p>{{ block.cards.length }} Cards</p>
+                        <p class="dark:text-slate-300">{{ block.cards.length }} Cards</p>
                         <div class="flex gap-2">
-                          <Button @click="addCard(block.block_id)">
-                            Add Card
-                          </Button>
+                          <Button @click="addCard(block.block_id)">Add Card</Button>
                           <NuxtLink to="https://icones.js.org/collection/uil" target="_blank">
-                            <Button variant="outline" size="icon">
-                              <Icon name="uil:icons" />
-                            </Button>
+                            <Button variant="outline" size="icon"><Icon name="uil:icons" /></Button>
                           </NuxtLink>
                         </div>
                       </div>
-
-                      <Accordion type="multiple" collapsible class="bg-gray-100 rounded-md">
-                        <AccordionItem v-for="(card, cardIndex) in block.cards" :key="card.c_id"
-                          :value="`card-item-${card.c_id}`" class="px-4">
-                          <AccordionTrigger>card {{ cardIndex + 1 }}</AccordionTrigger>
+                      <Accordion type="multiple" collapsible class="bg-gray-100 dark:bg-slate-700/50 rounded-md">
+                        <AccordionItem v-for="(card, cardIndex) in block.cards" :key="card.c_id" :value="`card-item-${card.c_id}`" class="px-4">
+                          <AccordionTrigger class="dark:text-slate-200">card {{ cardIndex + 1 }}</AccordionTrigger>
                           <AccordionContent class="flex gap-2 flex-col">
                             <div>
-                              <Label>Icon</Label>
+                              <Label class="dark:text-slate-300">Icon</Label>
                               <div class="flex flex-row items-center">
-                                <Icon class="text-4xl mr-2" :name="card.c_icon || 'uil:ban'" />
-                                <Input class="bg-white" v-model="card.c_icon" />
+                                <Icon class="text-4xl mr-2 dark:text-slate-200" :name="card.c_icon || 'uil:ban'" />
+                                <Input class="bg-white dark:bg-slate-700" v-model="card.c_icon" />
                               </div>
                             </div>
                             <div>
-                              <Label>Title</Label>
-                              <Input class="bg-white" v-model="card.c_title" />
+                              <Label class="dark:text-slate-300">Title</Label>
+                              <Input class="bg-white dark:bg-slate-700" v-model="card.c_title" />
                             </div>
                             <div>
-                              <Label>Description</Label>
-                              <Input class="bg-white" v-model="card.c_desc" />
+                              <Label class="dark:text-slate-300">Description</Label>
+                              <Input class="bg-white dark:bg-slate-700" v-model="card.c_desc" />
                             </div>
                             <Popover>
-                              <PopoverTrigger>
-                                <Button class="w-full" variant="destructive">Remove Skill</Button>
-                              </PopoverTrigger>
-                              <PopoverContent class="flex flex-col gap-2">
-                                <Label>Are you sure?</Label>
+                              <PopoverTrigger as-child>
+                                <Button class="w-full" variant="destructive">Remove Card</Button> </PopoverTrigger>
+                              <PopoverContent class="flex flex-col gap-2 dark:bg-slate-950 dark:border-slate-800">
+                                <Label class="dark:text-slate-200">Are you sure?</Label>
                                 <Button @click="removeCard(block.block_id, card.c_id)">Confirm</Button>
                               </PopoverContent>
                             </Popover>
@@ -557,18 +525,16 @@ const checkDeletion = computed(() => {
                         </AccordionItem>
                       </Accordion>
                     </div>
-
-
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </div>
           </div>
-
-          <div v-else>
+          <div v-else class="dark:text-slate-400">
             Non ci sono blocchi da visualizzare.
           </div>
         </CardContent>
       </Card>
     </div>
+  </div>
 </template>

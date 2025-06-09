@@ -26,15 +26,35 @@ const { data: landingInfo, pending } = await useFetch('/api/landing-settings', {
 // 2. COMPUTED PROPERTIES SICURE: Uso l'optional chaining (?.) per accedere
 //    a proprietà annidate senza causare errori se la struttura non fosse completa.
 const backgroundColor = computed(() => {
+  // 1. Accesso sicuro ai dati usando l'optional chaining.
   const bg = landingInfo.value?.hero_bg?.[0];
-  if (!bg) return 'background-color: #CCCCCC'; // Fallback di sicurezza
 
+  // 2. Se non ci sono dati per lo sfondo o manca il primo colore,
+  //    ritorniamo uno stile di fallback semplice e sicuro.
+  if (!bg || !bg.bg_color_1) {
+    return 'background-color: #CCCCCC;';
+  }
+
+  // 3. Se il tipo è solido, usiamo semplicemente il primo colore.
   if (bg.bg_type === "solid") {
     return `background-color: ${bg.bg_color_1}`;
-  } else {
-    // Ho corretto la sintassi del gradiente
-    return `background: ${bg.bg_type}-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2})`;
   }
+
+  // 4. LA LOGICA CHIAVE: Tentiamo di creare un gradiente SOLO se
+  //    abbiamo un tipo (linear o radial) E due colori validi.
+  if ((bg.bg_type === 'linear') && bg.bg_color_1 && bg.bg_color_2) {
+    // Usiamo `background-image` che è la proprietà più corretta per i gradienti
+    // e aggiungiamo direzioni/forme per un risultato prevedibile.
+    return `background-image: ${bg.bg_type}-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2});`;
+  }
+  else if (bg.bg_type === 'radial') {
+    // Aggiungiamo 'circle' per un effetto più prevedibile
+    return  `background-image: radial-gradient(circle, ${bg.bg_color_1}, ${bg.bg_color_2});`;
+  }
+
+  // 5. FALLBACK FINALE: Se il tipo è 'linear' o 'radial' ma manca il secondo colore,
+  //    evitiamo di creare un gradiente rotto e usiamo il primo colore come sfondo solido.
+  return `background-color: ${bg.bg_color_1}`;
 });
 
 const backgroundImageStyle = computed(() => {
@@ -109,8 +129,7 @@ if (process.client) {
           <div class="pb-6 opacity-80">{{ landingInfo.hero_desc }}</div>
           <div v-if="landingInfo.hero_button[0].active" class="relative z-5">
             <NuxtLink :to="landingInfo.hero_button[0].link">
-              <Button
-              @click="Lit.event('click-hero-button')"
+              <Button @click="Lit.event('click-hero-button')"
                 class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
                   landingInfo.hero_button[0].text }}</Button>
             </NuxtLink>

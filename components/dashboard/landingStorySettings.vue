@@ -100,7 +100,7 @@ async function updateStorySettings() {
         </span>
       </AccordionTrigger>
       <AccordionContent>
-        <Card class="bg-white dark:bg-slate-900 border-none">
+        <Card class="bg-white dark:bg-slate-800/50 border-none">
           <CardContent class="p-6">
             <div class="flex gap-2 items-center">
               <Checkbox id="story-active" v-model="currentLandingInfo.story" />

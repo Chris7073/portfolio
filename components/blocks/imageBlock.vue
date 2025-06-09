@@ -19,8 +19,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div v-if="props.blockData.image_url">
-    <div class="group relative h-[50dvh] md:h-100 overflow-hidden m-8 rounded-xl">
+  <div v-if="props.blockData.image_url" class="p-8 dark:bg-slate-800">
+    <div class="group relative h-[50dvh] md:h-100 overflow-hidden rounded-lg">
       <img class="w-full h-full block object-cover object-center transition-transform duration-300 ease-in-out"
         :class="props.blockData.hover_effect ? 'group-hover:scale-105' : ''" :src="props.blockData.image_url"
         :alt="props.blockData.altText || 'Immagine del blocco'">

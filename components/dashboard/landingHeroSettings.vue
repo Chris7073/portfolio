@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Button } from '@/components/ui/button'
 
 // MODIFICA: Aggiunta di `key` e `default` per rendere la chiamata robusta.
-const { data: landingInfo, refresh } = useFetch('/api/landing-settings', {
+const { data: landingInfo, refresh } = useFetch('/api/landing-settings/', {
   key: 'landing-settings-hero',
   default: () => ({
     hero: false,
@@ -50,7 +50,7 @@ const checkHeroChanges = computed(() => {
 // MODIFICA: Funzione di salvataggio migliorata con $fetch e gestione errori.
 async function updateHeroSettings() {
   try {
-    await $fetch('/api/landing-settings/update-hero', { // URL di esempio, adattalo
+    await $fetch('/api/websettings/update-landing-settings/', { // URL di esempio, adattalo
       method: 'POST',
       body: {
         hero: currentLandingInfo.value.hero,
@@ -77,13 +77,30 @@ function invertColors() {
 }
 
 const stylePreview = computed(() => {
-  const bg = currentLandingInfo.value.hero_bg[0];
-  const textColor = `color: ${bg.bg_text_color};`;
-  const background = bg.bg_type === 'solid' 
-    ? `background-color: ${bg.bg_color_1}` 
-    : `background: ${bg.bg_type}-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2})`;
-  return `${textColor} ${background}`;
+  // 1. Controlla se 'bg' esiste. Se no, esci subito.
+  const bg = currentLandingInfo.value?.hero_bg?.[0];
+  if (!bg) {
+    return 'background-color: #CCCCCC;'; // Fallback di sicurezza
+  }
+
+  const textColor = `color: ${bg.bg_text_color || '#000000'};`;
+  let backgroundStyle = `background-color: ${bg.bg_color_1 || '#CCCCCC'};`; // 2. Applica sempre un colore di base
+
+  // 3. Crea il gradiente SOLO se entrambi i colori esistono e il tipo non è 'solid'
+  if (bg.bg_type !== 'solid' && bg.bg_color_1 && bg.bg_color_2) {
+    if (bg.bg_type === 'linear') {
+      // Usiamo `background-image` che è la proprietà più corretta per i gradienti
+      backgroundStyle = `background-image: linear-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2});`;
+    } 
+    else if (bg.bg_type === 'radial') {
+      // Aggiungiamo 'circle' per un effetto più prevedibile
+      backgroundStyle = `background-image: radial-gradient(circle, ${bg.bg_color_1}, ${bg.bg_color_2});`;
+    }
+  }
+
+  return `${textColor} ${backgroundStyle}`;
 });
+
 </script>
 
 <template>
@@ -97,7 +114,7 @@ const stylePreview = computed(() => {
         </span>
       </AccordionTrigger>
       <AccordionContent>
-        <Card class="bg-white dark:bg-slate-900 border-none">
+        <Card class="bg-white dark:bg-slate-800/50 border-none">
           <CardContent class="p-6">
             <div class="flex gap-2 items-center"> <Checkbox id="hero-active" v-model="currentLandingInfo.hero" />
               <div class="grid gap-1.5 leading-none">
@@ -199,8 +216,10 @@ const stylePreview = computed(() => {
 
                 <Separator class="my-4" label="Preview" />
                 <div class="col-span-3">
-                  <div class="h-48 flex justify-center rounded-lg" :style="stylePreview"> <div class="content-center text-center h-full">
-                      <Icon name="uil:user" class="text-5xl" />
+                  <div class="h-100 flex justify-center rounded-lg" :style="stylePreview"> 
+                    <div class="content-center text-center h-full">
+                      
+                    <Icon name="uil:user" class="text-5xl" />
                       <div class="text-4xl font-bold">{{ currentLandingInfo.hero_title }}</div>
                       <div class="pb-6 opacity-80">{{ currentLandingInfo.hero_desc }}</div>
                       <div v-if="currentLandingInfo.hero_button[0].active">

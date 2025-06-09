@@ -9,19 +9,14 @@ const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 
-const { toggleSidebar } = useSidebar()
+const { toggleSidebar, state } = useSidebar()
 </script>
 
 <template>
-  <Button
-    data-sidebar="trigger"
-    data-slot="sidebar-trigger"
-    variant="ghost"
-    size="icon"
-    :class="cn('h-7 w-7', props.class)"
-    @click="toggleSidebar"
-  >
-    <PanelLeft />
+  <Button data-sidebar="trigger" data-slot="sidebar-trigger" variant="ghost" size="icon"
+    class="bg-transparent rounded-full text-slate-500 hover:text-blue-600 hover:bg-blue-100/50 dark:text-slate-400 dark:hover:text-sky-400 dark:hover:bg-slate-800 transition-colors duration-300 text-xl"
+    @click="toggleSidebar">
+    <Icon :name="state === 'collapsed' ? 'lucide:panel-left-open' : 'lucide:panel-left-close'" />
     <span class="sr-only">Toggle Sidebar</span>
   </Button>
 </template>
