@@ -67,7 +67,8 @@ useHead(() => ({
 <template>
   <div>
     <HomeSectionsHero />
-    <Navbar />
+    <div id="navbar-trigger"></div>
+    <Navbar trigger-selector="#navbar-trigger"/>
 
     <HomeSectionsMyStory />
 

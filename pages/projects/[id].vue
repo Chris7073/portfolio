@@ -83,7 +83,7 @@ useHead(() =>({
     <LoadingPage />
   </div>
   <div v-else>
-    <div v-if="isCurrentPostActive && currentPost">
+    <div v-if="isCurrentPostActive && currentPost" >
       <Navbar/>
       <div v-if="sortedBlocks.length > 0">
         <div v-for="block in sortedBlocks" :key="block.block_id">
