@@ -15,10 +15,15 @@
 
         <div v-for="tech in techLogos" :key="tech.name"
           class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center gap-4 transition-all duration-300">
-          <Icon :name="`simple-icons:${tech.icon}`" class="w-12 h-12 text-slate-700 dark:text-slate-200" />
-          <p class="text-sm font-semibold text-center text-slate-600 dark:text-slate-300">
-            {{ tech.name }}
-          </p>
+          <Icon :name="`simple-icons:${tech.icon}`" class="text-4xl text-slate-700 dark:text-slate-200" />
+          <div>
+            <p class="text-sm font-semibold text-center text-slate-600 dark:text-slate-300">
+              {{ tech.name }}
+            </p>
+            <p class="text-sm font-normal text-center text-slate-500 dark:text-slate-500">
+              {{ tech.desc }}
+            </p>
+          </div>
         </div>
 
       </div>
@@ -31,11 +36,11 @@ import { ref } from 'vue';
 
 // La lista di tecnologie. Semplice da gestire, anche quando arriverà da un DB.
 const techLogos = ref([
-  { name: 'Vue', icon: 'vuedotjs' },
-  { name: 'Nuxt', icon: 'nuxtdotjs' },
-  { name: 'Tailwind CSS', icon: 'tailwindcss' },
-  { name: 'Bootstrap', icon: 'bootstrap' },
-  { name: 'MongoDB', icon: 'mongodb' },
-  { name: 'Figma', icon: 'figma' },
+  { desc:'framework Javascript', name: 'Vue', icon: 'vuedotjs' },
+  { desc:'framework Javascript', name: 'Nuxt', icon: 'nuxtdotjs' },
+  { desc:'framework CSS', name: 'Tailwind CSS', icon: 'tailwindcss' },
+  { desc:'framework CSS', name: 'Bootstrap', icon: 'bootstrap' },
+  { desc:'Database', name: 'MongoDB', icon: 'mongodb' },
+  { desc:'Tool', name: 'Figma', icon: 'figma' },
 ]);
 </script>
