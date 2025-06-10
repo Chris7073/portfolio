@@ -3,7 +3,7 @@ import { Lit } from "litlyx-js"
 import { DialogsContatti } from '#components';
 import ThemeSwitcher from "./themeSwitcher.vue";
 const { data: websiteInfo } = useFetch('/api/web-settings')
-const { data: socialLinks, refresh } = useFetch('/api/social-links-settings');
+const { data: socialLinks } = useFetch('/api/social-links-settings');
 
 const { icons } = useSocialIcons();
 

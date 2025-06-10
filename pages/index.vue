@@ -71,8 +71,9 @@ useHead(() => ({
     <Navbar trigger-selector="#navbar-trigger"/>
 
     <HomeSectionsMyStory />
-
+    
     <HomeSectionsPortfolio />
+    <HomeSectionsMyStats/>
     <Footer />
   </div>
 </template>
