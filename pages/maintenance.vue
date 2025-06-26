@@ -35,7 +35,7 @@ function getIconName(iconId: number) {
             <Separator label="Stay Updated" class="my-4" />
             <div class="flex justify-center gap-2">
                 <div v-for="social of socialLinks">
-                    <NuxtLink v-if="social.active" :to="social.link" target="_blank">
+                    <NuxtLink v-if="social.active" :to="social.link" title="Visit my social" target="_blank">
                         <Button size="icon"
                             class="bg-white/80 text-blue-500 text-2xl border-blue-500/50 hover:bg-blue-500 hover:text-white">
                             <Icon :name="getIconName(social.icon)" />

@@ -103,7 +103,7 @@ useHead(() =>({
           This post has no blocks!
         </p>
         <p class="text-slate-500 dark:text-slate-300 mt-4">
-          <NuxtLink to="/">
+          <NuxtLink to="/" title="Return Home">
             <Button variant="outline">Return Home</Button>
           </NuxtLink>
         </p>
@@ -119,7 +119,7 @@ useHead(() =>({
           This project doesn't exist!
         </p>
         <p class="text-slate-500 dark:text-slate-300 mt-4">
-          <NuxtLink to="/">
+          <NuxtLink to="/" title="Return Home">
             <Button variant="outline">Return Home</Button>
           </NuxtLink>
         </p>

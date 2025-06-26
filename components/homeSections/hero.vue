@@ -126,6 +126,7 @@ if (process.client) {
         <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 md:gap-12">
           <div class="flex justify-center md:justify-center">
             <img id="memoji" src="/assets/chris.png"
+            alt="Chris"
                  class="size-60 md:size-96 block opacity-0 
                         transition-all duration-1000 ease-out 
                         group-[.is-loaded]:opacity-100
@@ -139,7 +140,7 @@ if (process.client) {
                       group-[.is-loaded]:opacity-100 group-[.is-loaded]:translate-y-0">
             
             <h1 class="text-4xl font-bold">{{ landingInfo.hero_title }}</h1>
-            <h6 class="text-lg opacity-80">{{ landingInfo.hero_desc }}</h6>
+            <p class="text-lg opacity-80">{{ landingInfo.hero_desc }}</p>
             <p class="text-sm font-mono opacity-60">{{ landingInfo.hero_tags }}</p>
 
             <NuxtLink v-if="landingInfo.hero_button[0].active" :to="landingInfo.hero_button[0].link"
