@@ -1,34 +1,13 @@
 <script setup lang="ts">
-// L'import di 'computed' non è più strettamente necessario con questa logica,
-// ma lo lasciamo nel caso servisse per altro.
-import { computed } from 'vue';
 
-// Il tuo middleware di pagina rimane invariato.
 definePageMeta({
   middleware: 'web-maintenance'
 })
 
-// --- DATA FETCHING ---
-// Le chiamate useFetch sono corrette: sono bloccanti sul server (senza `lazy: true`)
-// e hanno un valore di `default` per garantire la sicurezza dei tipi.
-// QUESTA PARTE È GIÀ CORRETTA E NON VA TOCCATA.
-
-const { data: landingSettings } = await useFetch('/api/landing-settings', {
-  default: () => ({
-    hero: false,
-    story: false,
-    // ... includi altre proprietà con valori di default se necessario
-  })
-});
-
-const { data: portfolioPosts } = await useFetch('/api/portfolio-posts', {
-  default: () => []
-});
-
 const { data: websiteInfo } = await useFetch('/api/web-settings', {
   default: () => ({
-    name: 'Nome del Sito',
-    desc: 'Descrizione del sito.'
+    name: 'Christian Cicciarella',
+    desc: 'My work is driven by a passion for clean aesthetics and creative problem-solving.'
   })
 });
 
@@ -41,12 +20,20 @@ const requestURL = useRequestURL();
 useHead(() => ({
   title: `${websiteInfo.value.name} - ${websiteInfo.value.desc}`,
   meta: [
+    {
+      name: 'description',
+      content: websiteInfo.value.desc
+    },
+    {
+      name: 'keywords',
+      content: 'web design, graphic design, portfolio, creative developer, ui, ux, nuxtjs, vuejs, figma, chris, christian cicciarella'
+    },
     // --- OPEN GRAPH (Facebook, LinkedIn, etc.) ---
     { property: 'og:title', content: websiteInfo.value.name },
     { property: 'og:description', content: websiteInfo.value.desc },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: requestURL.origin },
-    { property: 'og:site_name', content: `${websiteInfo.value.name} - ${websiteInfo.value.desc}` },
+    { property: 'og:site_name', content: `${websiteInfo.value.name} - my Tiny Portfolio` },
     { property: 'og:locale', content: 'it_IT' },
     { property: 'og:image', content: `${requestURL.origin}/assets/me.jpg` }, // Assicurati che questa immagine esista nella cartella /public
     { property: 'og:image:width', content: '1200' },
@@ -67,13 +54,10 @@ useHead(() => ({
 <template>
   <div>
     <HomeSectionsHero />
-    <div id="navbar-trigger"></div>
-    <Navbar trigger-selector="#navbar-trigger"/>
-
+    <Navbar />
     <HomeSectionsMyStory />
-    
+    <HomeSectionsMyStats />
     <HomeSectionsPortfolio />
-    <HomeSectionsMyStats/>
     <Footer />
   </div>
 </template>

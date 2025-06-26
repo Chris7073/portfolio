@@ -18,6 +18,7 @@ const { data: landingInfo, refresh } = useFetch('/api/landing-settings/', {
     hero: false,
     hero_title: 'Caricamento...',
     hero_desc: '...',
+    hero_tags:'...',
     hero_button: [{ active: false, text: '', link: '' }],
     hero_bg: [{ bg_type: 'solid', bg_text_color: '#000000', bg_color_1: '#FFFFFF', bg_color_2: '#CCCCCC', bg_image: '' }]
   })
@@ -28,6 +29,7 @@ const currentLandingInfo = ref({
   hero: false,
   hero_title: '',
   hero_desc: '',
+  hero_tags: '',
   hero_button: [{ active: false, text: '', link: '' }],
   hero_bg: [{ bg_type: 'solid', bg_text_color: '', bg_color_1: '', bg_color_2: '', bg_image: '' }]
 });
@@ -56,6 +58,7 @@ async function updateHeroSettings() {
         hero: currentLandingInfo.value.hero,
         hero_title: currentLandingInfo.value.hero_title,
         hero_desc: currentLandingInfo.value.hero_desc,
+        hero_tags: currentLandingInfo.value.hero_tags,
         hero_button: currentLandingInfo.value.hero_button,
         hero_bg: currentLandingInfo.value.hero_bg,
       }
@@ -136,6 +139,10 @@ const stylePreview = computed(() => {
                 <Label for="hero_desc" class="dark:text-slate-200">Description</Label>
                 <Input type="text" id="hero_desc" v-model="currentLandingInfo.hero_desc" class="bg-white dark:bg-slate-800 dark:border-slate-600" />
               </div>
+                            <div>
+                <Label for="hero_tags" class="dark:text-slate-200">Tags</Label>
+                <Input type="text" id="hero_tags" v-model="currentLandingInfo.hero_tags" class="bg-white dark:bg-slate-800 dark:border-slate-600" />
+              </div>
               <div>
                 <Label for="hero_text_color" class="dark:text-slate-200">Text Color</Label>
                 <Input class="h-16 w-20 p-1 bg-white dark:bg-slate-800" type="color" id="hero_text_color"
@@ -214,7 +221,7 @@ const stylePreview = computed(() => {
                     class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
                 </div>
 
-                <Separator class="my-4" label="Preview" />
+                <!-- <Separator class="my-4" label="Preview" />
                 <div class="col-span-3">
                   <div class="h-100 flex justify-center rounded-lg" :style="stylePreview"> 
                     <div class="content-center text-center h-full">
@@ -230,7 +237,7 @@ const stylePreview = computed(() => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
             <Button class="my-6 w-full" :disabled="!checkHeroChanges" @click="updateHeroSettings">Save Hero Settings</Button>

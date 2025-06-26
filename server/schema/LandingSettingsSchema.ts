@@ -3,6 +3,7 @@ export type TLandingSettings = {
     hero: boolean,
     hero_title: string,
     hero_desc: string,
+    hero_tags:string,
     hero_bg: {
         bg_type: string,
         bg_text_color: string,
@@ -31,6 +32,7 @@ const LandingSettingsSchema = new Schema<TLandingSettings>({
     hero: { type: Boolean },
     hero_title: { type: String },
     hero_desc: { type: String },
+    hero_tags:{type:String},
     hero_bg: [{ type: Schema.Types.Mixed }],
     hero_button: [{ type: Schema.Types.Mixed }],
     story: { type: Boolean },

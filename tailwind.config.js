@@ -26,7 +26,17 @@ module.export = {
 			}
 		}
 	},
-	plugins: [],
+	plugins: [
+    // --- INIZIO DELLA MODIFICA ---
+    // Aggiungiamo questo plugin
+    plugin(function({ addVariant }) {
+      // Definiamo una nuova variante chiamata 'is-visible'
+      // Il selettore '&.is-visible' dice: "applica questo stile quando
+      // l'elemento stesso (&) ha anche la classe .is-visible"
+      addVariant('is-visible', '&.is-visible')
+    })
+    // --- FINE DELLA MODIFICA ---
+  ],
 	content: [
 		'./components/**/*.{vue,js,ts}',
 		'./layouts/**/*.vue',

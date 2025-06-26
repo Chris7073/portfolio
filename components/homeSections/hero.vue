@@ -2,12 +2,15 @@
 // Nota: la sintassi corretta e standard è "lang='ts'" e "setup"
 import { Lit } from "litlyx-js"
 
-// 1. DATA FETCHING SICURO: Aggiunto un 'default' per prevenire che 'landingInfo' sia 'null'.
-const { data: landingInfo, pending } = await useFetch('/api/landing-settings', {
+// ======================================================
+// QUESTA PARTE È PERFETTA, NON VIENE TOCCATA
+// ======================================================
+const { data: landingInfo } = await useFetch('/api/landing-settings', {
   default: () => ({
     hero: false,
     hero_title: 'Benvenuto',
     hero_desc: '...',
+    hero_tags: '...',
     hero_bg: [{
       bg_type: 'solid',
       bg_color_1: '#CCCCCC',
@@ -23,37 +26,20 @@ const { data: landingInfo, pending } = await useFetch('/api/landing-settings', {
   })
 })
 
-// 2. COMPUTED PROPERTIES SICURE: Uso l'optional chaining (?.) per accedere
-//    a proprietà annidate senza causare errori se la struttura non fosse completa.
 const backgroundColor = computed(() => {
-  // 1. Accesso sicuro ai dati usando l'optional chaining.
   const bg = landingInfo.value?.hero_bg?.[0];
-
-  // 2. Se non ci sono dati per lo sfondo o manca il primo colore,
-  //    ritorniamo uno stile di fallback semplice e sicuro.
   if (!bg || !bg.bg_color_1) {
     return 'background-color: #CCCCCC;';
   }
-
-  // 3. Se il tipo è solido, usiamo semplicemente il primo colore.
   if (bg.bg_type === "solid") {
     return `background-color: ${bg.bg_color_1}`;
   }
-
-  // 4. LA LOGICA CHIAVE: Tentiamo di creare un gradiente SOLO se
-  //    abbiamo un tipo (linear o radial) E due colori validi.
   if ((bg.bg_type === 'linear') && bg.bg_color_1 && bg.bg_color_2) {
-    // Usiamo `background-image` che è la proprietà più corretta per i gradienti
-    // e aggiungiamo direzioni/forme per un risultato prevedibile.
     return `background-image: ${bg.bg_type}-gradient(to bottom, ${bg.bg_color_1}, ${bg.bg_color_2});`;
   }
   else if (bg.bg_type === 'radial') {
-    // Aggiungiamo 'circle' per un effetto più prevedibile
-    return  `background-image: radial-gradient(circle, ${bg.bg_color_1}, ${bg.bg_color_2});`;
+    return `background-image: radial-gradient(circle, ${bg.bg_color_1}, ${bg.bg_color_2});`;
   }
-
-  // 5. FALLBACK FINALE: Se il tipo è 'linear' o 'radial' ma manca il secondo colore,
-  //    evitiamo di creare un gradiente rotto e usiamo il primo colore come sfondo solido.
   return `background-color: ${bg.bg_color_1}`;
 });
 
@@ -71,10 +57,11 @@ const backgroundImageStyle = computed(() => {
   return {};
 });
 
-// 3. LOGICA CLIENT-SIDE ISOLATA:
-//    Tutta la logica che usa 'window' e manipola il DOM deve essere eseguita
-//    solo sul client per evitare errori durante il rendering sul server.
+// ======================================================
+// MODIFICHE ALLA LOGICA CLIENT-SIDE
+// ======================================================
 const fixedHeaderElement = ref<HTMLElement | null>(null);
+const isLoaded = ref(false);
 
 if (process.client) {
   const maxBrightness = 1.0;
@@ -82,17 +69,29 @@ if (process.client) {
   let scrollEffectRange = 200;
 
   const handleScroll = () => {
+    // La logica per il brightness rimane invariata e funzionerà perché il ref è collegato
     if (!fixedHeaderElement.value) return;
 
     const scrollY = window.scrollY;
     const progress = Math.max(0, Math.min(1, scrollY / scrollEffectRange));
     const currentBrightness = maxBrightness - (maxBrightness - minBrightness) * progress;
+    fixedHeaderElement.value.style.filter = `brightness(${currentBrightness})`;
+    
+    // --- MODIFICA CHIAVE PER L'IMMAGINE ---
+    // Invece di modificare 'transform' direttamente, aggiorniamo le variabili CSS
+    const memoji = document.getElementById('memoji') // document.getElementById è ok qui
+    if (memoji) {
+        const rotationFactor = 0.01;
+        const scaleFactor = 0.0002;
+        const gradiDiRotazione = scrollY * rotationFactor;
+        let valoreDiScala = 1 - (scrollY * scaleFactor); // Rimpicciolisce scendendo
+        valoreDiScala = Math.max(0.7, valoreDiScala); // Limite
 
-    window.requestAnimationFrame(() => {
-      if (fixedHeaderElement.value) {
-        fixedHeaderElement.value.style.filter = `brightness(${currentBrightness})`;
-      }
-    });
+        window.requestAnimationFrame(() => {
+            memoji.style.setProperty('--rotazione', `${gradiDiRotazione}deg`);
+            memoji.style.setProperty('--scala', `${valoreDiScala}`);
+        });
+    }
   };
 
   onMounted(() => {
@@ -101,7 +100,10 @@ if (process.client) {
       scrollEffectRange = headerHeight * 1.5;
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    handleScroll(); // Chiamata iniziale
+    setTimeout(() => {
+      isLoaded.value = true;
+    }, 100);
   });
 
   onUnmounted(() => {
@@ -109,35 +111,48 @@ if (process.client) {
   });
 }
 </script>
+
 <template class="relative">
-  <div ref="fixedHeaderElement" class="sticky top-0 z-1" style="transform-origin: center top;">
-    <div v-if="pending" class="h-dvh bg-gray-200">
-      <div class="flex items-center justify-center h-full w-full">
-        <div class="flex flex-col gap-2">
-          <Skeleton class="w-50 bg-gray-300 h-5" />
-          <Skeleton class="w-50 bg-gray-300 h-2" />
-          <Skeleton class="w-50 bg-gray-400/80 h-10 mt-4" />
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      <div v-if="landingInfo?.hero" class="grid h-dvh " :style="backgroundColor">
-        <div class="absolute inset-0 z-0" :style="backgroundImageStyle"></div>
-        <div class="content-center text-center h-full" :style="'color:' + landingInfo.hero_bg[0].bg_text_color">
-          <Icon name="uil:user" class="text-5xl" />
-          <div class="text-4xl">{{ landingInfo.hero_title }}</div>
-          <div class="pb-6 opacity-80">{{ landingInfo.hero_desc }}</div>
-          <div v-if="landingInfo.hero_button[0].active" class="relative z-5">
-            <NuxtLink :to="landingInfo.hero_button[0].link">
-              <Button @click="Lit.event('click-hero-button')"
-                class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">{{
-                  landingInfo.hero_button[0].text }}</Button>
-            </NuxtLink>
+  <section 
+    ref="fixedHeaderElement"
+    :class="{ 'is-loaded': isLoaded }" 
+    class="group sticky top-0 z-1" 
+    style="transform-origin: center top;"
+  >
+    <div v-if="landingInfo?.hero" class="grid h-dvh " :style="backgroundColor">
+      <div class="absolute inset-0 z-0" :style="backgroundImageStyle"></div>
+      <div class="content-center text-center h-full z-1 p-8" :style="'color:' + landingInfo.hero_bg[0].bg_text_color">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 md:gap-12">
+          <div class="flex justify-center md:justify-center">
+            <img id="memoji" src="/assets/chris.png"
+                 class="size-60 md:size-96 block opacity-0 
+                        transition-all duration-1000 ease-out 
+                        group-[.is-loaded]:opacity-100
+                        [--traslazione-y:-2rem] group-[.is-loaded]:[--traslazione-y:0rem]
+                        [transform:rotate(var(--rotazione,0deg))_translateY(var(--traslazione-y,0rem))_scale(var(--scala,1))]" />
           </div>
 
+          <div class="flex flex-col items-center md:items-start text-center md:text-left gap-4
+                      opacity-0 translate-y-8
+                      transition-all duration-1000 ease-out delay-200
+                      group-[.is-loaded]:opacity-100 group-[.is-loaded]:translate-y-0">
+            
+            <h1 class="text-4xl font-bold">{{ landingInfo.hero_title }}</h1>
+            <h6 class="text-lg opacity-80">{{ landingInfo.hero_desc }}</h6>
+            <p class="text-sm font-mono opacity-60">{{ landingInfo.hero_tags }}</p>
+
+            <NuxtLink v-if="landingInfo.hero_button[0].active" :to="landingInfo.hero_button[0].link"
+                      :title="`click button to visit ${landingInfo.hero_button[0].text}`"
+                      class="mt-4">
+              <Button @click="Lit.event('click-hero-button')"
+                      class="text-xl p-8 rounded-full z-2 bg-white/50 text-black/80 hover:bg-white cursor-pointer shadow-md">
+                {{ landingInfo.hero_button[0].text }}
+              </Button>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
+  </section>
 </template>

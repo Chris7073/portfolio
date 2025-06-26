@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { Lit } from "litlyx-js"
+
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 
@@ -15,15 +17,15 @@ const { data: portfolioCatsInfo } = useFetch('/api/portfolio-categories', { defa
 const { data: PortfolioPostsInfo, pending } = useFetch('/api/portfolio-posts', { default: () => [] });
 
 function getCategoryName(catId: string) {
-    const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
-    return cat ? cat.cat_name : 'No category'
+  const cat = portfolioCatsInfo.value?.find(c => c.cat_id === catId);
+  return cat ? cat.cat_name : 'No category'
 }
 
 // 1. La funzione rimane la stessa, ma non la useremo direttamente nel template
 function getRandomBg() {
-    const backgrounds = ['bg-blue-500', 'bg-green-500', 'bg-orange-500', 'bg-red-500', 'bg-pink-500']
-    const randomIndex = Math.floor(Math.random() * backgrounds.length);
-    return backgrounds[randomIndex];
+  const backgrounds = ['bg-blue-500', 'bg-green-500', 'bg-orange-500', 'bg-red-500', 'bg-pink-500']
+  const randomIndex = Math.floor(Math.random() * backgrounds.length);
+  return backgrounds[randomIndex];
 }
 
 // 2. Creiamo una mappa reattiva per memorizzare le classi casuali
@@ -31,30 +33,40 @@ const randomBgClasses = ref<{ [key: string]: string }>({});
 
 // 3. Usiamo onMounted per popolare le classi casuali SOLO sul client
 onMounted(() => {
-    if (filteredPostsCatId.value) {
-        filteredPostsCatId.value.forEach(post => {
-            // Se un post non ha immagine, gli assegnamo una classe casuale
-            if (!post.post_image) {
-                randomBgClasses.value[post.post_id] = getRandomBg();
-            }
-        });
-    }
+  if (filteredPostsCatId.value) {
+    filteredPostsCatId.value.forEach(post => {
+      // Se un post non ha immagine, gli assegnamo una classe casuale
+      if (!post.post_image) {
+        randomBgClasses.value[post.post_id] = getRandomBg();
+      }
+    });
+  }
 });
 
 const selectedCatId = ref('0');
 const filteredPostsCatId = computed(() => {
-    return selectedCatId.value === '0'
-        ? PortfolioPostsInfo.value?.filter(post => post.post_active === true)
-        : PortfolioPostsInfo.value?.filter(
-            post => post.post_cat === selectedCatId.value
-        )
+  return selectedCatId.value === '0'
+    ? PortfolioPostsInfo.value?.filter(post => post.post_active === true)
+    : PortfolioPostsInfo.value?.filter(
+      post => post.post_cat === selectedCatId.value
+    )
 })
+
+function clickPortfolio(id: number, name: string) {
+  Lit.event('click_portfolio_url', {
+    metadata: {
+      'post_id': id,
+      'post_name': name,
+    }
+  });
+}
 </script>
 <template>
   <section id="portfolio" class="relative z-20 bg-white dark:bg-slate-800 py-16 lg:py-24 px-4">
-    <div class="container mx-auto">
+    <div v-animate-on-scroll
+      class="container group mx-auto px-4 opacity-0 transition-opacity duration-500 ease-out [&.is-visible]:opacity-100">
 
-      <div class="text-center mb-8 lg:mb-12">
+      <div class="text-center mb-8 lg:mb-12 opacity-0 -translate-y-8 transition-all duration-1000 ease-out group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 dark:text-white mb-4">
           Il Mio Portfolio
         </h2>
@@ -63,22 +75,18 @@ const filteredPostsCatId = computed(() => {
         </p>
       </div>
 
-      <div class="flex justify-center mb-8 lg:mb-12 px-4 sm:px-0">
+      <div class="flex justify-center mb-8 lg:mb-12 px-4 sm:px-0 opacity-0 -translate-x-8 transition-all duration-1500 ease-out group-[.is-visible]:opacity-100 group-[.is-visible]:translate-x-0">
         <div class="w-full sm:w-64 md:w-72">
           <Select v-model="selectedCatId">
             <SelectTrigger class="bg-slate-100 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200">
               <SelectValue placeholder="Filtra per Categoria" />
             </SelectTrigger>
-            
+
             <SelectContent class="w-[var(--reka-popper-anchor-width)] z-[1000] dark:bg-slate-950 dark:border-slate-800">
               <SelectGroup>
                 <SelectLabel class="dark:text-slate-400">Categorie Progetti</SelectLabel>
-                <SelectItem 
-                  v-for="cat in portfolioCatsInfo" 
-                  :key="cat.cat_id" 
-                  :value="cat.cat_id"
-                  class="dark:text-slate-200 dark:focus:bg-slate-800"
-                >
+                <SelectItem v-for="cat in portfolioCatsInfo" :key="cat.cat_id" :value="cat.cat_id"
+                  class="dark:text-slate-200 dark:focus:bg-slate-800">
                   {{ cat.cat_name }}
                 </SelectItem>
               </SelectGroup>
@@ -93,20 +101,25 @@ const filteredPostsCatId = computed(() => {
       <div v-else>
         <div v-if="filteredPostsCatId?.some(item => item.post_active)"
           class="grid gap-6 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <div v-for="item of filteredPostsCatId" :key="item.post_id">
+          <div v-for="item of filteredPostsCatId" :key="item.post_id"
+          class="                        
+          transition-all duration-300 ease-in-out transform hover:-translate-y-1
+          opacity-0 translate-y-4 
+                        group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0"
+                 :style="{ 'transition-delay': `${600 + item.post_id * 100}ms` }">
             <NuxtLink v-if="item.post_active" :to="`/projects/${item.post_id}`"
+              :title="`View portfolio post named ${item.post_name}`"
+              @click="clickPortfolio(item.post_id, item.post_name)"
               class="group block h-100 transform transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-xl">
               <div class="relative h-full overflow-hidden rounded-lg text-white shadow-md" :class="[
                 item.post_image
                   ? 'bg-cover bg-center bg-no-repeat'
                   : randomBgClasses[item.post_id] || 'bg-gray-500'
               ]" :style="item.post_image ? { backgroundImage: `url('${item.post_image}')` } : null">
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent">
                 </div>
 
-                <div
-                  class="absolute inset-0 bg-black opacity-0 transition-opacity duration-500 group-hover:opacity-20">
+                <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-500 group-hover:opacity-20">
                 </div>
 
                 <div class="relative flex h-full flex-col justify-end p-6">

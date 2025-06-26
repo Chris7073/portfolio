@@ -1,8 +1,22 @@
-<template>
-  <section class="relative z-20 bg-slate-50 dark:bg-slate-900 py-16 lg:py-24">
-    <div class="container mx-auto px-4">
+      
+<script lang="ts" setup>
+import { ref } from 'vue';
 
-      <div class="text-center mb-12 lg:mb-16">
+// La lista di tecnologie. Semplice da gestire, anche quando arriverà da un DB.
+const techLogos = ref([
+  { desc: 'framework Javascript', name: 'Nuxt', icon: 'nuxtdotjs' },
+  { desc: 'framework CSS', name: 'Tailwind CSS', icon: 'tailwindcss' },
+  { desc: 'Database', name: 'MongoDB', icon: 'mongodb' },
+  { desc: 'Tool', name: 'Figma', icon: 'figma' },
+]);
+
+</script>
+<template>
+  <section id="tech" class="relative z-20 bg-slate-50 dark:bg-slate-900 py-16 lg:py-24">
+    <div v-animate-on-scroll
+      class="container group mx-auto px-4 opacity-0 transition-opacity duration-500 ease-out [&.is-visible]:opacity-100">
+
+      <div class="text-center mb-12 lg:mb-16 opacity-0 -translate-y-8 transition-all duration-1000 ease-out group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0">
         <h3 class="text-3xl lg:text-4xl font-bold text-slate-800 dark:text-slate-100">
           Tecnologie e Strumenti
         </h3>
@@ -11,36 +25,27 @@
         </p>
       </div>
 
-      <div class="px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 lg:gap-6">
+      <ul class="px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-        <div v-for="tech in techLogos" :key="tech.name"
-          class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center gap-4 transition-all duration-300">
-          <Icon :name="`simple-icons:${tech.icon}`" class="text-4xl text-slate-700 dark:text-slate-200" />
-          <div>
-            <p class="text-sm font-semibold text-center text-slate-600 dark:text-slate-300">
+        <li v-for="(tech, index) in techLogos" :key="tech.name" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center gap-4 
+                   opacity-0 translate-y-4 
+                   transition-all duration-1000 ease-out 
+                   group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0"
+          :style="{ 'transition-delay': `${600 + index * 100}ms` }">
+
+          <Icon :name="`simple-icons:${tech.icon}`" class="text-5xl text-slate-700 dark:text-slate-200" />
+
+          <div class="text-center">
+            <h4 class="font-semibold text-slate-700 dark:text-slate-200">
               {{ tech.name }}
-            </p>
-            <p class="text-sm font-normal text-center text-slate-500 dark:text-slate-500">
+            </h4>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
               {{ tech.desc }}
             </p>
           </div>
-        </div>
+        </li>
 
-      </div>
+      </ul>
     </div>
   </section>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-
-// La lista di tecnologie. Semplice da gestire, anche quando arriverà da un DB.
-const techLogos = ref([
-  { desc:'framework Javascript', name: 'Vue', icon: 'vuedotjs' },
-  { desc:'framework Javascript', name: 'Nuxt', icon: 'nuxtdotjs' },
-  { desc:'framework CSS', name: 'Tailwind CSS', icon: 'tailwindcss' },
-  { desc:'framework CSS', name: 'Bootstrap', icon: 'bootstrap' },
-  { desc:'Database', name: 'MongoDB', icon: 'mongodb' },
-  { desc:'Tool', name: 'Figma', icon: 'figma' },
-]);
-</script>
