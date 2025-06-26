@@ -61,7 +61,7 @@ onMounted(() => {
 const requestURL = useRequestURL();
 
 useHead(() => ({
-  title: `${webSettings?.value.name} - my Tiny Portfolio`,
+  title: `${webSettings?.value.name} - my Tiny Links`,
   meta: [
     {
       name: 'description',
@@ -76,7 +76,7 @@ useHead(() => ({
     { property: 'og:description', content: webSettings?.value.desc },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: requestURL.origin },
-    { property: 'og:site_name', content: `${webSettings?.value.name} - my Tiny Portfolio` },
+    { property: 'og:site_name', content: `${webSettings?.value.name} - my Tiny Links` },
     { property: 'og:locale', content: 'it_IT' },
     { property: 'og:image', content: `${requestURL.origin}/assets/me.jpg` }, // Assicurati che questa immagine esista nella cartella /public
     { property: 'og:image:width', content: '1200' },
