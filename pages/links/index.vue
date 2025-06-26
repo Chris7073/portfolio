@@ -5,7 +5,13 @@ import { Button } from '@/components/ui/button'
 
 // --- I tuoi Fetch dei Dati (invariati) ---
 const { data: socialLinks } = useFetch('/api/social-links-settings');
-const { data: webSettings } = useFetch('/api/web-settings');
+const { data: webSettings } = useFetch('/api/web-settings', {
+  default: () => ({
+    name: 'Christian Cicciarella',
+    desc: 'My work is driven by a passion for clean aesthetics and creative problem-solving.'
+  })
+
+});
 const { data: landingInfo } = await useFetch('/api/landing-settings');
 
 // --- Le tue Computed Properties e Funzioni (invariate) ---
@@ -51,6 +57,40 @@ onMounted(() => {
         typingDone.value = true;
     }, 2000); // 800ms di delay + 1500ms di durata = 2300ms
 });
+
+const requestURL = useRequestURL();
+
+useHead(() => ({
+  title: `${webSettings?.value.name} - my Tiny Portfolio`,
+  meta: [
+    {
+      name: 'description',
+      content: webSettings?.value.desc
+    },
+    {
+      name: 'keywords',
+      content: 'web design, graphic design, portfolio, creative developer, ui, ux, nuxtjs, vuejs, figma, chris, christian cicciarella'
+    },
+    // --- OPEN GRAPH (Facebook, LinkedIn, etc.) ---
+    { property: 'og:title', content: webSettings?.value.name },
+    { property: 'og:description', content: webSettings?.value.desc },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: requestURL.origin },
+    { property: 'og:site_name', content: `${webSettings?.value.name} - my Tiny Portfolio` },
+    { property: 'og:locale', content: 'it_IT' },
+    { property: 'og:image', content: `${requestURL.origin}/assets/me.jpg` }, // Assicurati che questa immagine esista nella cartella /public
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { property: 'og:image:alt', content: `Immagine di anteprima per ${webSettings?.value.name}` },
+
+    // --- TWITTER CARDS ---
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: webSettings?.value.name },
+    { name: 'twitter:description', content: webSettings?.value.desc },
+    { name: 'twitter:image', content: `${requestURL.origin}/assets/me.jpg` }, // Assicurati che questa immagine esista nella cartella /public
+    { name: 'twitter:image:alt', content: `Immagine di anteprima di ${webSettings?.value.name}` },
+  ],
+}))
 </script>
 
 <template>
