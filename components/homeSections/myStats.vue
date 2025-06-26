@@ -27,21 +27,25 @@ const techLogos = ref([
 
       <ul class="px-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-        <li v-for="(tech, index) in techLogos" :key="tech.name" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center gap-4 
-                   opacity-0 translate-y-4 
-                   transition-all duration-1000 ease-out 
-                   group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0"
-          :style="{ 'transition-delay': `${600 + index * 100}ms` }">
+        <li v-for="(tech, index) in techLogos" 
+            :key="tech.name"
+            class="transition-all duration-500 ease-out opacity-0 translate-y-6 group-[.is-visible]:opacity-100 group-[.is-visible]:translate-y-0"
+            :style="{ 'transition-delay': `${200 + index * 50}ms` }">
+          
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center gap-4 h-full
+                       transform transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
 
-          <Icon :name="`simple-icons:${tech.icon}`" class="text-5xl text-slate-700 dark:text-slate-200" />
+            <Icon :name="`simple-icons:${tech.icon}`" class="text-5xl text-slate-700 dark:text-slate-200" />
 
-          <div class="text-center">
-            <h4 class="font-semibold text-slate-700 dark:text-slate-200">
-              {{ tech.name }}
-            </h4>
-            <p class="text-sm text-slate-500 dark:text-slate-400">
-              {{ tech.desc }}
-            </p>
+            <div class="text-center">
+              <h4 class="font-semibold text-slate-700 dark:text-slate-200">
+                {{ tech.name }}
+              </h4>
+              <p class="text-sm text-slate-500 dark:text-slate-400">
+                {{ tech.desc }}
+              </p>
+            </div>
+            
           </div>
         </li>
 

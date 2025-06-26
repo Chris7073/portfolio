@@ -112,7 +112,7 @@ if (process.client) {
 }
 </script>
 
-<template class="relative">
+<template>
   <section 
     ref="fixedHeaderElement"
     :class="{ 'is-loaded': isLoaded }" 

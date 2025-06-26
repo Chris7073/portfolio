@@ -18,7 +18,7 @@ const { data: websiteInfo } = await useFetch('/api/web-settings', {
 const requestURL = useRequestURL();
 
 useHead(() => ({
-  title: `${websiteInfo.value.name} - ${websiteInfo.value.desc}`,
+  title: `${websiteInfo.value.name} - my Tiny Portfolio`,
   meta: [
     {
       name: 'description',
@@ -53,11 +53,16 @@ useHead(() => ({
 
 <template>
   <div>
-    <HomeSectionsHero />
-    <Navbar />
-    <HomeSectionsMyStory />
-    <HomeSectionsMyStats />
-    <HomeSectionsPortfolio />
+    <main>
+      <HomeSectionsHero />
+    
+    <div class="relative z-20 bg-slate-100 dark:bg-slate-900">
+      <Navbar />
+      <HomeSectionsMyStory />
+      <HomeSectionsMyStats />
+      <HomeSectionsPortfolio />
+    </div>
+    </main>
     <Footer />
   </div>
 </template>
