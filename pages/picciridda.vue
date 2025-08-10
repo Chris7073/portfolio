@@ -109,7 +109,7 @@ function spawnEmojiBurst() {
           <p
             v-if="steps === 5"
             class="absolute left-1/2 -translate-x-1/2 z-30
-                   -top-[40%] w-full
+                   bottom-[60dvh] w-full
                    text-3xl md:text-4xl text-black/80 font-bold text-center drop-shadow-lg"
           >
             Il tuo regalo è...
@@ -142,7 +142,7 @@ function spawnEmojiBurst() {
     </div>
 
     <!-- Emoji burst -->
-    <div class="fixed inset-0  pointer-events-none">
+    <div class="fixed inset-0  pointer-events-none blur-[1px]">
       <span
         v-for="(e, i) in emojiPieces"
         :key="i"
@@ -160,8 +160,8 @@ function spawnEmojiBurst() {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 10px;
-  height: 10px;
+  width: 24px;
+  height: 24px;
   border-radius: 5px;
   background-color: var(--bg-color);
   animation: explode var(--duration) ease-out var(--delay) forwards;
