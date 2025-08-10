@@ -124,10 +124,11 @@ function spawnEmojiBurst() {
             class="absolute left-1/2 -translate-x-1/2 z-30
                    bottom-[60%]
                    bg-white/90 backdrop-blur-sm border border-emerald-500/70
-                   shadow-xl rounded-2xl px-6 py-5 w-[50dvw] text-center
+                   shadow-xl rounded-2xl px-6 py-5 w-[80dvw] text-center
                    text-xl md:text-2xl text-neutral-900 font-semibold tracking-tight"
           >
-            Pinocchio 🤥
+            <p>Mmmm...</p>
+            <p>lo scopriremo l'anno prossimo 🤣</p>
           </div>
         </Transition>
       </div>
