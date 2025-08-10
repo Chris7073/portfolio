@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 
 const steps = ref(0)
-const messages = ['Sei sicura? 🤔', 'Ma davvero? 🫨', 'Mmmmm... 😂', 'Vabene 🫡']
+const messages = ['Ma davveo? 🤔', 'Sei curiosa.. 🫨', 'Affruntiti 😂', 'Vabene, hai vinto 🫡']
 const colors = ['bg-yellow-500', 'bg-rose-500', 'bg-orange-500', 'bg-blue-500']
 
 const shrunk = ref(false)
@@ -105,12 +105,14 @@ function spawnEmojiBurst() {
           />
         </Transition>
 
-        <Transition name="fade-down">
+        <Transition name="fade-up">
           <p
-            v-if="steps === 5"
+            v-if="steps >= 4"
             class="absolute left-1/2 -translate-x-1/2 z-30
-                   bottom-[60dvh] w-full
+                   bottom-[30dvh] w-full
+                   
                    text-3xl md:text-4xl text-black/80 font-bold text-center drop-shadow-lg"
+                   :class="steps ===4?'animate-pulse':''"
           >
             Il tuo regalo è...
           </p>
