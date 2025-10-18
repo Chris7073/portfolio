@@ -38,11 +38,11 @@ const PortfolioPostsSchema = new Schema<TPortfolioPosts>({
     post_desc: { type: String, required: false },
     post_image: { type: String, required: false },
     blocks:[{
-        block_id:{type:Number,required:true,unique:true},
+        block_id:{type:Number,required:true},
         block_name:{ type: String, required: true },
         block_title:{ type: String, required:false, default:'block title' },
         block_content:{ type: String, required:false, default:'block content text' },
-        block_position:{type:Number,required:true,unique:true},
+        block_position:{type:Number,required:true},
         hover_effect:{type:Boolean,required:true,default:false},
         image_url:{ type: String, required:false, default:'https://placehold.co/1000x1000' },
         altText:{ type: String, required: false },
