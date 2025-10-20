@@ -12,7 +12,7 @@ export type TPortfolioPosts = {
         block_name:string;
         block_title:string;
         block_content:string;
-        block_position:number;
+        block_position:number; 
         hover_effect:boolean;
         image_url?:string;
         altText?:string;
