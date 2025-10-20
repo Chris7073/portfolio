@@ -181,7 +181,7 @@ function addBlock() {
     block_name: selectBlockToAdd.value,
     block_title: `Nuovo Blocco - ${selectBlockToAdd.value}`,
     block_content: '',
-    block_position: currentProjectInfo.value.blocks.length+1,
+    block_position: currentProjectInfo.value.blocks.length + 1,
     hover_effect: false,
     image_url: '',
     altText: '',
@@ -275,9 +275,11 @@ const checkDeletion = computed(() => {
 
 <template>
   <div>
-    <header class="bg-slate-200 dark:bg-slate-900 border-b dark:border-b-slate-800 p-4 flex items-center justify-between gap-4 sticky top-0 z-10">
+    <header
+      class="bg-slate-200 dark:bg-slate-900 border-b dark:border-b-slate-800 p-4 flex items-center justify-between gap-4 sticky top-0 z-10">
       <div class="flex items-center gap-3 flex-grow min-w-0">
-        <Button variant="outline" size="icon" @click="navigateTo('/dashboard/projects/')" class="dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700">
+        <Button variant="outline" size="icon" @click="navigateTo('/dashboard/projects/')"
+          class="dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700">
           <Icon name="material-symbols:arrow-back-ios-new-rounded" class="text-lg" />
         </Button>
 
@@ -310,7 +312,8 @@ const checkDeletion = computed(() => {
           </SelectContent>
         </Select>
 
-        <Button class="bg-slate-800 hover:bg-slate-700 dark:bg-sky-600 dark:hover:bg-sky-500" :disabled="!checkChanges || pending" @click="saveProject">
+        <Button class="bg-slate-800 hover:bg-slate-700 dark:bg-sky-600 dark:hover:bg-sky-500"
+          :disabled="!checkChanges || pending" @click="saveProject">
           <div v-if="pending" class="flex items-center">
             <Icon name="ri:loader-fill" class="mr-2 animate-spin" />
             Saving...
@@ -338,9 +341,11 @@ const checkDeletion = computed(() => {
               <Input v-model="deletionInput" placeholder="Delete/..." class="dark:bg-slate-900 dark:border-slate-700" />
               <div class="flex justify-end gap-2 mt-2">
                 <PopoverClose as-child>
-                  <Button variant="secondary" class="dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">Annulla</Button>
+                  <Button variant="secondary"
+                    class="dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">Annulla</Button>
                 </PopoverClose>
-                <Button :disabled="!checkDeletion" @click="deleteProject" variant="destructive">Conferma Cancellazione</Button>
+                <Button :disabled="!checkDeletion" @click="deleteProject" variant="destructive">Conferma
+                  Cancellazione</Button>
               </div>
             </div>
           </PopoverContent>
@@ -355,29 +360,33 @@ const checkDeletion = computed(() => {
             <Icon name="gg:website" class="text-lg mr-2" />
             Project info
           </CardTitle>
-          <CardDescription class="dark:text-slate-400">Here you can edit your description and background image</CardDescription>
+          <CardDescription class="dark:text-slate-400">Here you can edit your description and background image
+          </CardDescription>
         </CardHeader>
         <CardContent class="grid gap-4 grid-cols-1 lg:grid-cols-2">
           <div>
             <Label class="dark:text-slate-200">Project Description</Label>
-            <Textarea v-model="currentProjectInfo.post_desc" class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
+            <Textarea v-model="currentProjectInfo.post_desc"
+              class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
           </div>
           <div>
             <Label class="dark:text-slate-200">Background Image</Label>
-            <Input v-model="currentProjectInfo.post_image" class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
+            <Input v-model="currentProjectInfo.post_image"
+              class="dark:bg-slate-800 dark:border-slate-700 dark:text-slate-50" />
             <img v-if="currentProjectInfo.post_image" :src="currentProjectInfo.post_image"
               class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
           </div>
         </CardContent>
       </Card>
-      
+
       <Card class="m-4 dark:bg-slate-900 dark:border-slate-800">
         <CardHeader>
           <CardTitle class="content-middle flex dark:text-slate-100">
             <Icon name="uil:web-section" class="text-lg mr-2" />
             Blocks
           </CardTitle>
-          <CardDescription class="dark:text-slate-400">Here you can edit your blocks for project: <strong class="dark:text-slate-300">{{ currentProjectInfo.post_name }}</strong>
+          <CardDescription class="dark:text-slate-400">Here you can edit your blocks for project: <strong
+              class="dark:text-slate-300">{{ currentProjectInfo.post_name }}</strong>
           </CardDescription>
         </CardHeader>
         <CardContent class="grid gap-4">
@@ -389,43 +398,65 @@ const checkDeletion = computed(() => {
               <SelectContent class="dark:bg-slate-950 dark:border-slate-700">
                 <SelectGroup>
                   <SelectLabel>Blocks types</SelectLabel>
-                  <SelectItem value="text"><Icon name="memory:text-box" /> Text Block</SelectItem>
-                  <SelectItem value="image"><Icon name="memory:image" /> Image Block</SelectItem>
-                  <SelectItem value="text-image"><Icon name="memory:text-image" /> Text and Image Block</SelectItem>
-                  <SelectItem value="image-text"><Icon name="memory:text-image" /> Image and Text Block</SelectItem>
-                  <SelectItem value="cards"><Icon name="memory:card-text" /> Cards Block</SelectItem>
+                  <SelectItem value="text">
+                    <Icon name="memory:text-box" /> Text Block
+                  </SelectItem>
+                  <SelectItem value="image">
+                    <Icon name="memory:image" /> Image Block
+                  </SelectItem>
+                  <SelectItem value="text-image">
+                    <Icon name="memory:text-image" /> Text and Image Block
+                  </SelectItem>
+                  <SelectItem value="image-text">
+                    <Icon name="memory:text-image" /> Image and Text Block
+                  </SelectItem>
+                  <SelectItem value="cards">
+                    <Icon name="memory:card-text" /> Cards Block
+                  </SelectItem>
+                  <SelectItem value="links">
+                    <Icon name="uil:link" /> Links Block
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
             <Button :disabled="!checkBlockToAdd" @click="addBlock">Add Block</Button>
           </div>
           <Separator label="Edit Blocks" />
-          
+
           <div v-if="sortedBlocks.length > 0">
             <div v-for="(block, index) in sortedBlocks" :key="block.block_id">
-              <Accordion type="single" collapsible class="bg-slate-200 dark:bg-slate-800/50 dark:border dark:border-slate-700 rounded-xl px-4 my-2">
+              <Accordion type="single" collapsible
+                class="bg-slate-200 dark:bg-slate-800/50 dark:border dark:border-slate-700 rounded-xl px-4 my-2">
                 <AccordionItem :value="`block-${block.block_id}`" class="border-b-0">
                   <div class="flex items-center justify-between w-full">
-                    <AccordionTrigger class="capitalize flex-grow dark:text-slate-200">{{ block.block_name }} Block</AccordionTrigger>
+                    <AccordionTrigger class="capitalize flex-grow dark:text-slate-200">{{ block.block_name }} Block
+                    </AccordionTrigger>
                     <div class="flex gap-1 ml-4 flex-shrink-0">
-                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, -1)" :disabled="index === 0" class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
+                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, -1)" :disabled="index === 0"
+                        class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
                         <Icon name="material-symbols:arrow-upward-alt-rounded" />
                       </Button>
-                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, 1)" :disabled="index === sortedBlocks.length - 1" class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
+                      <Button size="icon" variant="ghost" @click="moveBlock(block.block_id, 1)"
+                        :disabled="index === sortedBlocks.length - 1"
+                        class="disabled:opacity-25 dark:text-slate-400 dark:hover:bg-slate-700">
                         <Icon name="material-symbols:arrow-downward-alt-rounded" />
                       </Button>
                       <Popover>
                         <PopoverTrigger as-child>
-                          <Button variant="outline" size="icon" class="bg-red-400 hover:bg-red-500/80 text-white hover:text-white">
+                          <Button variant="outline" size="icon"
+                            class="bg-red-400 hover:bg-red-500/80 text-white hover:text-white">
                             <Icon name="material-symbols:delete-outline-rounded" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent align="center" side="left" class="flex flex-col gap-2 dark:bg-slate-950 dark:border-slate-800">
+                        <PopoverContent align="center" side="left"
+                          class="flex flex-col gap-2 dark:bg-slate-950 dark:border-slate-800">
                           <Label class="dark:text-slate-200">Are you sure?</Label>
-                          <p class="dark:text-slate-400">You are going to delete <strong>block #{{ block.block_name }}</strong></p>
+                          <p class="dark:text-slate-400">You are going to delete <strong>block #{{ block.block_name
+                              }}</strong></p>
                           <div class="flex justify-between gap-2 mt-2">
                             <PopoverClose as-child>
-                              <Button variant="secondary" class="dark:bg-slate-800 dark:hover:bg-slate-700">Undo</Button>
+                              <Button variant="secondary"
+                                class="dark:bg-slate-800 dark:hover:bg-slate-700">Undo</Button>
                             </PopoverClose>
                             <Button @click="removeBlock(block.block_id)" variant="destructive">Confirm</Button>
                           </div>
@@ -434,8 +465,9 @@ const checkDeletion = computed(() => {
                     </div>
                   </div>
                   <AccordionContent class="bg-slate-50 dark:bg-slate-800 rounded-md p-4 mb-4">
-                    
-                    <div v-if="['text', 'image','text-image', 'image-text', 'cards'].includes(block.block_name)" class="flex flex-col gap-4">
+
+                    <div v-if="['text', 'image', 'text-image', 'image-text', 'cards', 'links'].includes(block.block_name)"
+                      class="flex flex-col gap-4">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Text Settings</h3>
                       </div>
@@ -449,19 +481,22 @@ const checkDeletion = computed(() => {
                       </div>
                     </div>
 
-                    <div v-if="['image', 'text-image', 'image-text'].includes(block.block_name)" class="flex flex-col gap-4 mt-6">
+                    <div v-if="['image', 'text-image', 'image-text'].includes(block.block_name)"
+                      class="flex flex-col gap-4 mt-6">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Image Settings</h3>
                       </div>
                       <div>
                         <Label class="dark:text-slate-300">Image Url</Label>
                         <Input class="bg-white dark:bg-slate-700" v-model="block.image_url" />
-                        <img v-if="block.image_url" :src="block.image_url" class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
+                        <img v-if="block.image_url" :src="block.image_url"
+                          class="mt-2 rounded-md border dark:border-slate-700 max-h-40 w-auto" />
                       </div>
                       <div class="flex items-center gap-3 mt-1">
                         <Checkbox :id="'hover-' + block.block_id" v-model="block.hover_effect" />
                         <div class="grid gap-1.5 leading-none">
-                          <label :for="'hover-' + block.block_id" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-slate-300">
+                          <label :for="'hover-' + block.block_id"
+                            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-slate-300">
                             {{ block.hover_effect ? 'Activated' : 'Disabled' }}
                           </label>
                           <p class="text-sm text-muted-foreground dark:text-slate-500">
@@ -481,7 +516,7 @@ const checkDeletion = computed(() => {
                       </div>
                     </div>
 
-                    <div v-if="block.block_name === 'cards'" class="flex flex-col gap-4">
+                    <div v-if="['cards', 'links'].includes(block.block_name)" class="flex flex-col gap-4">
                       <div class="border-b dark:border-slate-700 pb-4 mb-4 mt-6">
                         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-200">Cards Settings</h3>
                       </div>
@@ -490,12 +525,15 @@ const checkDeletion = computed(() => {
                         <div class="flex gap-2">
                           <Button @click="addCard(block.block_id)">Add Card</Button>
                           <NuxtLink to="https://icones.js.org/collection/uil" target="_blank">
-                            <Button variant="outline" size="icon"><Icon name="uil:icons" /></Button>
+                            <Button variant="outline" size="icon">
+                              <Icon name="uil:icons" />
+                            </Button>
                           </NuxtLink>
                         </div>
                       </div>
                       <Accordion type="multiple" collapsible class="bg-gray-100 dark:bg-slate-700/50 rounded-md">
-                        <AccordionItem v-for="(card, cardIndex) in block.cards" :key="card.c_id" :value="`card-item-${card.c_id}`" class="px-4">
+                        <AccordionItem v-for="(card, cardIndex) in block.cards" :key="card.c_id"
+                          :value="`card-item-${card.c_id}`" class="px-4">
                           <AccordionTrigger class="dark:text-slate-200">card {{ cardIndex + 1 }}</AccordionTrigger>
                           <AccordionContent class="flex gap-2 flex-col">
                             <div>
@@ -515,7 +553,8 @@ const checkDeletion = computed(() => {
                             </div>
                             <Popover>
                               <PopoverTrigger as-child>
-                                <Button class="w-full" variant="destructive">Remove Card</Button> </PopoverTrigger>
+                                <Button class="w-full" variant="destructive">Remove Card</Button>
+                              </PopoverTrigger>
                               <PopoverContent class="flex flex-col gap-2 dark:bg-slate-950 dark:border-slate-800">
                                 <Label class="dark:text-slate-200">Are you sure?</Label>
                                 <Button @click="removeCard(block.block_id, card.c_id)">Confirm</Button>

@@ -10,6 +10,7 @@ const ImageBlock = defineAsyncComponent(() => import('~/components/blocks/imageB
 const TextImageBlock = defineAsyncComponent(() => import('~/components/blocks/textImageBlock.vue'));
 const ImageTextBlock = defineAsyncComponent(() => import('~/components/blocks/imageTextBlock.vue'));
 const TitleCardsBlock = defineAsyncComponent(() => import('~/components/blocks/titleCardsBlock.vue'));
+const TitleLinksBlock = defineAsyncComponent(() => import('~/components/blocks/titleLinksBlock.vue'));
 
 // Mappa dei componenti
 const blockComponents: Record<string, Component> = {
@@ -17,7 +18,8 @@ const blockComponents: Record<string, Component> = {
   'image': ImageBlock,
   'text-image': TextImageBlock,
   'image-text': ImageTextBlock,
-  'cards':TitleCardsBlock
+  'cards':TitleCardsBlock,
+  'links':TitleLinksBlock,
 };
 
 const route = useRoute();
