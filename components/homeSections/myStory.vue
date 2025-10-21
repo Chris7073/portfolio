@@ -41,7 +41,7 @@ const { data: storyInfo, pending } = await useFetch('/api/landing-settings', {
                 <div class="flex flex-col items-start h-full">
                   <div class="flex items-center mb-4">
                     <span class="inline-flex justify-center items-center w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-sky-100 dark:bg-sky-700 mr-4 flex-shrink-0">
-                      <Icon :name="`uil:${story.me_icon || 'question-circle'}`" class="text-3xl lg:text-4xl text-sky-600 dark:text-sky-300" />
+                      <Icon :name="story.me_icon || 'uil:question-circle'" class="text-3xl lg:text-4xl text-sky-600 dark:text-sky-300" />
                     </span>
                     <h3 class="text-xl lg:text-2xl font-semibold text-sky-700 dark:text-sky-400 leading-tight">
                       {{ story.me_title || 'Titolo non disponibile' }}
